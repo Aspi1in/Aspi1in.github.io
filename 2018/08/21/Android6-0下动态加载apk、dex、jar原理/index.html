@@ -83,16 +83,16 @@
 <meta name="keywords" content="Android逆向">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android6.0下动态加载apk、dex、jar原理">
-<meta property="og:url" content="http://yoursite.com/2018/11/12/Android6-0下动态加载apk、dex、jar原理/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/08/21/Android6-0下动态加载apk、dex、jar原理/index.html">
 <meta property="og:site_name" content="Aspi1in&#39;s Blog">
 <meta property="og:description" content="当我们在应用层通过形如下面这样的代码加载一个文件到内存时，到底在底层的实现是什么样子的呢12345678910111213141516171819202122232425File file = new File(Environment.getExternalStorageDirectory()                .toString() + File.separator + &quot;testd">
 <meta property="og:locale" content="zh">
-<meta property="og:image" content="http://yoursite.com/2018/11/12/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png">
-<meta property="og:updated_time" content="2018-11-12T13:35:26.447Z">
+<meta property="og:image" content="http://yoursite.com/2018/08/21/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png">
+<meta property="og:updated_time" content="2018-11-12T14:07:37.536Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android6.0下动态加载apk、dex、jar原理">
 <meta name="twitter:description" content="当我们在应用层通过形如下面这样的代码加载一个文件到内存时，到底在底层的实现是什么样子的呢12345678910111213141516171819202122232425File file = new File(Environment.getExternalStorageDirectory()                .toString() + File.separator + &quot;testd">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/12/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/08/21/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/11/12/Android6-0下动态加载apk、dex、jar原理/">
+  <link rel="canonical" href="http://yoursite.com/2018/08/21/Android6-0下动态加载apk、dex、jar原理/">
 
 
 
@@ -235,7 +235,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Android6-0下动态加载apk、dex、jar原理/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/21/Android6-0下动态加载apk、dex、jar原理/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -264,8 +264,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-12T21:32:57+08:00">
-                2018-11-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-21T21:32:57+08:00">
+                2018-08-21
               </time>
             
 
@@ -344,7 +344,7 @@
 <p>构造好的载入内存的<code>DexFile</code>对象实例被放置到了一个<code>Element[]</code>类型的容器中返回给了<code>public DexPathList(ClassLoader definingContext, String dexPath, String libraryPath, File optimizedDirectory)</code>构造方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DexPathList</span><span class="params">(ClassLoader definingContext, String dexPath,</span></span></span><br><span class="line"><span class="function"><span class="params">            String libraryPath, File optimizedDirectory)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (definingContext == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"definingContext == null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (dexPath == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"dexPath == null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (optimizedDirectory != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!optimizedDirectory.exists())  &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                    <span class="string">"optimizedDirectory doesn't exist: "</span></span><br><span class="line">                    + optimizedDirectory);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!(optimizedDirectory.canRead()</span><br><span class="line">                        &amp;&amp; optimizedDirectory.canWrite())) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                    <span class="string">"optimizedDirectory not readable/writable: "</span></span><br><span class="line">                    + optimizedDirectory);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.definingContext = definingContext;</span><br><span class="line"></span><br><span class="line">    ArrayList&lt;IOException&gt; suppressedExceptions = <span class="keyword">new</span> ArrayList&lt;IOException&gt;();</span><br><span class="line">    <span class="comment">// save dexPath for BaseDexClassLoader</span></span><br><span class="line">    <span class="keyword">this</span>.dexElements = makePathElements(splitDexPath(dexPath), optimizedDirectory,</span><br><span class="line">                                        suppressedExceptions);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Native libraries may exist in both the system and</span></span><br><span class="line">    <span class="comment">// application library paths, and we use this search order:</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">//   1. This class loader's library path for application libraries (libraryPath):</span></span><br><span class="line">    <span class="comment">//   1.1. Native library directories</span></span><br><span class="line">    <span class="comment">//   1.2. Path to libraries in apk-files</span></span><br><span class="line">    <span class="comment">//   2. The VM's library path from the system property for system libraries</span></span><br><span class="line">    <span class="comment">//      also known as java.library.path</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This order was reversed prior to Gingerbread; see http://b/2933456.</span></span><br><span class="line">    <span class="keyword">this</span>.nativeLibraryDirectories = splitPaths(libraryPath, <span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">this</span>.systemNativeLibraryDirectories =</span><br><span class="line">            splitPaths(System.getProperty(<span class="string">"java.library.path"</span>), <span class="keyword">true</span>);</span><br><span class="line">    List&lt;File&gt; allNativeLibraryDirectories = <span class="keyword">new</span> ArrayList&lt;&gt;(nativeLibraryDirectories);</span><br><span class="line">    allNativeLibraryDirectories.addAll(systemNativeLibraryDirectories);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.nativeLibraryPathElements = makePathElements(allNativeLibraryDirectories, <span class="keyword">null</span>,</span><br><span class="line">                                                      suppressedExceptions);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (suppressedExceptions.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.dexElementsSuppressedExceptions =</span><br><span class="line">            suppressedExceptions.toArray(<span class="keyword">new</span> IOException[suppressedExceptions.size()]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        dexElementsSuppressedExceptions = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>最终这个存放实例化<code>DexFile</code>对象的容器被赋值给了<code>DexPathList.dexElements</code>成员当中，网上回朔到<code>BaseDexClassLoader</code>类的构造方法中去<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BaseDexClassLoader</span><span class="params">(String dexPath, File optimizedDirectory,</span></span></span><br><span class="line"><span class="function"><span class="params">            String libraryPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(parent);</span><br><span class="line">    <span class="keyword">this</span>.pathList = <span class="keyword">new</span> DexPathList(<span class="keyword">this</span>, dexPath, libraryPath, optimizedDirectory);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>构造的<code>DexPathList</code>实例被赋值给了<code>BaseDexClassLoader.pathList</code>成员变量中，在往前回朔就到了<code>DexClassLoader</code>类的构造方法中，自此就已经基本完成了，根据dex文件加载文件到内存的所有工作。</p>
-<p>大致的流程图如下，省略部分细节：<br><img src="/2018/11/12/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png" alt="lbxx"></p>
+<p>大致的流程图如下，省略部分细节：<br><img src="/2018/08/21/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png" alt="lbxx"></p>
 <p>下一篇，我们看从已经加载到内存中的dex文件中获取class的实现</p>
 
       
@@ -376,8 +376,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/12/Android动态加载类/" rel="next" title="Android动态加载类">
-                <i class="fa fa-chevron-left"></i> Android动态加载类
+              <a href="/2018/08/19/Ubuntu16-04-LTS-编译Android6-0源码，刷机Nexus-6P/" rel="next" title="Ubuntu16.04 LTS 编译Android6.0源码，刷机Nexus 6P">
+                <i class="fa fa-chevron-left"></i> Ubuntu16.04 LTS 编译Android6.0源码，刷机Nexus 6P
               </a>
             
           </div>
@@ -385,6 +385,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/22/Tcpdumper开发笔记/" rel="prev" title="Tcpdumper开发笔记">
+                Tcpdumper开发笔记 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -452,7 +456,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -465,7 +469,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

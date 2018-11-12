@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="Android开发,">
 
 
 
@@ -79,13 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Aspi1in&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+<meta name="description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
+<meta name="keywords" content="Android开发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次Android 8.0下的重打包工作">
+<meta property="og:url" content="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/index.html">
 <meta property="og:site_name" content="Aspi1in&#39;s Blog">
+<meta property="og:description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
 <meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2018-11-12T14:14:18.325Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Aspi1in&#39;s Blog">
+<meta name="twitter:title" content="记一次Android 8.0下的重打包工作">
+<meta name="twitter:description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
 
 
 
@@ -115,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/">
+  <link rel="canonical" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
 
 
 
 
 
-  <title>Archive | Aspi1in's Blog</title>
+  <title>记一次Android 8.0下的重打包工作 | Aspi1in's Blog</title>
   
 
 
@@ -140,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -214,391 +219,153 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">记一次Android 8.0下的重打包工作</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-29T22:11:39+08:00">
+                2018-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        Um..! 21 posts in total. Keep on posting.
-      </span>
 
-      
-
-        
-        
-        
-
-        
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
+            
+          
 
-        
+          
+          
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/10/29/记一次Android-8-0下的重打包工作/" itemprop="url">
-              
-                <span itemprop="name">记一次Android 8.0下的重打包工作</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-10-29T22:11:39+08:00" content="2018-10-29">
-          10-29
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+        </div>
+      </header>
+    
 
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/10/25/Smali学习（一）/" itemprop="url">
-              
-                <span itemprop="name">Smali学习（一）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-10-25T22:12:40+08:00" content="2018-10-25">
-          10-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/10/22/Xposed的一些事项/" itemprop="url">
-              
-                <span itemprop="name">Xposed的一些事项</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-10-22T22:10:49+08:00" content="2018-10-22">
-          10-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <p>同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有<code>classes.dex</code>文件，解压之后发现确实没有<code>classes.dex</code>文件，看签名里面的文件清单里面是有<code>classes.dex</code>的摘要的，所以肯定是哪里没搞清楚.</p>
+<p>看撸出来的还有一个<code>oat</code>文件，这个文件夹貌似是高版本做预编译的，进去发现了<code>odex</code>和<code>vdex</code>两个文件，估计货就在<code>vdex</code>文件中，网上查了下<code>vdex</code>的文件结构，还是稍微有点复杂的，好在大佬已经写好了工具<a href="https://github.com/anestisb/vdexExtractor" target="_blank" rel="noopener">vdexExtractor</a></p>
+<p>照着git上的编译，然后进行转换<br><code>vdexExtractor -i /tmp/BasicDreams.vdex -o /tmp</code><br>得到<code>classes.dex</code>文件，拖到JEB里面，对着原始apk的AM文件一看，果然各个类都是在的</p>
+<p>将<code>classes.dex</code>文件插回原来的apk中，然后就是重签名了，用<code>jarsigner</code>进行重签<br><code>jarsigner -verbose -keystore /Users/aspilin/Documents/conf/keystore.jks -signedjar Hw-apk-signed.apk HwWeatherClock-repack.apk aspilin</code><br>安装报错，说是二代签名的问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Failed to install /Users/aspilin/Downloads/Hw-apk-signed.apk: Failure [INSTALL_PARSE_FAILED_NO_CERTIFICATES: Failed to collect certificates from /data/app/vmdl1369179008.tmp/base.apk: META-INF/CERT.SF indicates /data/app/vmdl1369179008.tmp/base.apk is signed using APK Signature Scheme v2, but no such signature was found. Signature stripped?]</span><br></pre></td></tr></table></figure></p>
+<p>网上查了下，发现是在编译的时候开了二代签名的配置，那就必须要是要第二代签名技术进行签名，由于已经编译好的apk我们没有源码，显然是不能修改配置重新编译的，那么只能用二代签名工具进行重签名</p>
+<p>使用<code>apksigner</code>进行签名，具体的<code>apksigner</code>使用细节不再介绍<br><code>apksigner sign --ks debug.keystore MyApp.apk</code></p>
+<p>万万没想到，到最后我们还是把应用安装到别的非华为的设备上了，但是但是但是。。。启动的时候失败了，查看LogCat可以看出是在应用启动的时候做了对设备分辨率的检查，这个检查依赖于一个Framework层的包，这个包是<code>com.huawei.android.os.xxx</code>起头的，显然是EMUI这个ROM特有的，所以。。。最后还是凉了。</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/09/19/Java注解（Annotation）/" itemprop="url">
-              
-                <span itemprop="name">Java注解（Annotation）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-09-19T22:19:29+08:00" content="2018-09-19">
-          09-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/29/Android6-0-Xposed开发/" itemprop="url">
-              
-                <span itemprop="name">Android6.0 Xposed开发</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-29T21:40:53+08:00" content="2018-08-29">
-          08-29
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/22/Tcpdumper开发笔记/" itemprop="url">
-              
-                <span itemprop="name">Tcpdumper开发笔记</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-22T21:29:26+08:00" content="2018-08-22">
-          08-22
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/21/Android6-0下动态加载apk、dex、jar原理/" itemprop="url">
-              
-                <span itemprop="name">Android6.0下动态加载apk、dex、jar原理</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-21T21:32:57+08:00" content="2018-08-21">
-          08-21
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/19/Ubuntu16-04-LTS-编译Android6-0源码，刷机Nexus-6P/" itemprop="url">
-              
-                <span itemprop="name">Ubuntu16.04 LTS 编译Android6.0源码，刷机Nexus 6P</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-19T21:45:08+08:00" content="2018-08-19">
-          08-19
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/13/Android动态加载类/" itemprop="url">
-              
-                <span itemprop="name">Android动态加载类</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-13T21:30:53+08:00" content="2018-08-13">
-          08-13
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/08/07/Android加固（一）/" itemprop="url">
-              
-                <span itemprop="name">Android加固（一）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2018-08-07T21:39:12+08:00" content="2018-08-07">
-          08-07
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android开发/" rel="tag"># Android开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/25/Smali学习（一）/" rel="next" title="Smali学习（一）">
+                <i class="fa fa-chevron-left"></i> Smali学习（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><a class="extend next" rel="next" href="/archives/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -606,6 +373,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -818,6 +589,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 

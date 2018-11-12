@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Android6-0下动态加载apk、dex、jar原理/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -248,7 +248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/12/Android6-0下动态加载apk、dex、jar原理/" itemprop="url">Android6.0下动态加载apk、dex、jar原理</a></h1>
+                <a class="post-title-link" href="/2018/10/29/记一次Android-8-0下的重打包工作/" itemprop="url">记一次Android 8.0下的重打包工作</a></h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,851 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-12T21:32:57+08:00">
-                2018-11-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-29T22:11:39+08:00">
+                2018-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有<code>classes.dex</code>文件，解压之后发现确实没有<code>classes.dex</code>文件，看签名里面的文件清单里面是有<code>classes.dex</code>的摘要的，所以肯定是哪里没搞清楚.</p>
+<p>看撸出来的还有一个<code>oat</code>文件，这个文件夹貌似是高版本做预编译的，进去发现了<code>odex</code>和<code>vdex</code>两个文件，估计货就在<code>vdex</code>文件中，网上查了下<code>vdex</code>的文件结构，还是稍微有点复杂的，好在大佬已经写好了工具<a href="https://github.com/anestisb/vdexExtractor" target="_blank" rel="noopener">vdexExtractor</a></p>
+<p>照着git上的编译，然后进行转换<br><code>vdexExtractor -i /tmp/BasicDreams.vdex -o /tmp</code><br>得到<code>classes.dex</code>文件，拖到JEB里面，对着原始apk的AM文件一看，果然各个类都是在的</p>
+<p>将<code>classes.dex</code>文件插回原来的apk中，然后就是重签名了，用<code>jarsigner</code>进行重签<br><code>jarsigner -verbose -keystore /Users/aspilin/Documents/conf/keystore.jks -signedjar Hw-apk-signed.apk HwWeatherClock-repack.apk aspilin</code><br>安装报错，说是二代签名的问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Failed to install /Users/aspilin/Downloads/Hw-apk-signed.apk: Failure [INSTALL_PARSE_FAILED_NO_CERTIFICATES: Failed to collect certificates from /data/app/vmdl1369179008.tmp/base.apk: META-INF/CERT.SF indicates /data/app/vmdl1369179008.tmp/base.apk is signed using APK Signature Scheme v2, but no such signature was found. Signature stripped?]</span><br></pre></td></tr></table></figure></p>
+<p>网上查了下，发现是在编译的时候开了二代签名的配置，那就必须要是要第二代签名技术进行签名，由于已经编译好的apk我们没有源码，显然是不能修改配置重新编译的，那么只能用二代签名工具进行重签名</p>
+<p>使用<code>apksigner</code>进行签名，具体的<code>apksigner</code>使用细节不再介绍<br><code>apksigner sign --ks debug.keystore MyApp.apk</code></p>
+<p>万万没想到，到最后我们还是把应用安装到别的非华为的设备上了，但是但是但是。。。启动的时候失败了，查看LogCat可以看出是在应用启动的时候做了对设备分辨率的检查，这个检查依赖于一个Framework层的包，这个包是<code>com.huawei.android.os.xxx</code>起头的，显然是EMUI这个ROM特有的，所以。。。最后还是凉了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/25/Smali学习（一）/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/25/Smali学习（一）/" itemprop="url">Smali学习（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-25T22:12:40+08:00">
+                2018-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><p>smali和backsmali是dalvik虚拟机使用的dex文件的汇编器和反汇编器，它宽松的语法基于Jasmin/dedexer语法，并支持dex格式的所有功能。</p>
+<p><strong>寄存器</strong>的数量在函数起始之后通过类似<code>.registers 4</code>的方式约定，还可以通过类似<code>.locals 2</code>的方式确定，两者的区别在于，<code>.registers</code>表示函数使用的所有的寄存器个数，而<code>.locals</code>表示函数使用的非参数占用的寄存器个数，函数使用的寄存器的个数由参数占用的寄存器个数 + 非参数占用的寄存器个数共同构成。</p>
+<p>所以在上面的例子中的<code>add()</code>方法中可以看到<code>.registers 4</code>表示两个<code>Integer</code>类型的参数占用了两个寄存器，再加上函数中使用的<code>v0</code>、<code>v1</code>两个寄存器，一共四个寄存器。</p>
+<p>参数总是存放在寄存器的后面，如<code>add()</code>中的两个<code>Integer</code>类型的参数就分别存放在<code>v3</code>、<code>v4</code>两个寄存器中，但是在本例中并没有发现在函数中出现<code>v3</code>、<code>v4</code>两个寄存器，这是因为不同的命名方案导致的，p命名方案会将参数改写成<code>Px</code>的形式，<code>p0</code>、<code>p1</code>分别表示了<code>v3</code>、<code>v4</code>，这样会一定程度上便于阅读smali代码，更加重要的意义在于，当你想在函数中添加代码，然后需要额外的寄存器支持时，单纯的修改<code>.registers n</code>中的<code>n</code>是不行的，因为用<code>v</code>命名方式函数中所有的在取参数时候都要往后偏移你要增加的寄存器数量，这会很麻烦，显然<code>p</code>命名方式就不会存在这种问题。</p>
+<p>dalvik字节码中，寄存器是32位的，可以存放任意类型的值。64位数据类型可以使用连个寄存器来存放。如<code>long</code>和<code>double</code></p>
+<p>dalvik的字节码有两大类型：primitive types和reference types。Reference types是对象和数组，其他的都是primitive type。<br>原始类型：<br>| Smali类型 | Java类型 |<br>| —— | —— |<br>| V | void-can only be used for return types |<br>| Z | boolean |<br>| B | byte |<br>| S    | short |<br>| C    | char |<br>| I    | int |<br>| J    | long(64bits) |<br>| F    | float |<br>| D    | double(64bits) |</p>
+<p><strong>对象类型</strong>：<br><code>Lpackage/name/ObjectName;L</code>表示它是一个对象类型，<code>package/name/</code>是对象的包，<code>ObjectName</code>是对象的名字，<code>;</code>表示对象名字的结尾。在java中等价于<code>package.name.ObjectName</code>。例如，<code>Ljava/lang/String;</code>等价于<code>java.lang.String</code>。数组的形式<code>[I</code>表示为一维整形数组，例如：<code>int[]</code>。要表示多维数组只需要简单的增加<code>[</code>的数量。<code>[[I=int[][]</code>，<code>[[[I=int[][][]</code>等等。注意：数组的最大维度为<strong>255</strong>，也可以表示对象的数组，例如：<code>[Ljava/lang/String;</code>表示一个字符串数组。</p>
+<p><strong>methods</strong>总是被表示为一个非常冗长的形式包括：包含方法的类型、方法的名称、参数的类型和返回类型。虚拟机需要这些信息才能正确的定位方法，在字节码中执行静态方法。<br>如：<code>Lpackage/name/ObjectName;-&gt;MethodName(III)Z</code><br>在这个例子中：Lpackage/name/ObjectName;为类型，MethodsName是方法的名称。（III）Z是方法的声明。III表示有三个int类型的参数，Z表示返回类型是boolean。</p>
+<p><strong>Fieldsde</strong>的形式：<code>Lpackage/name/ObjectName;-&gt;FieldName:Ljava/lang/String;</code></p>
+<h4 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h4><p>将<code>.class</code>文件转化为<code>.dex</code>文件的方法：<code>dx.jar --dex --output=test.dex test.class</code></p>
+<p>Java代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Integer <span class="title">add</span><span class="params">(Integer a, Integer b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Smali代码（Android 26 SDK Tool）<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">.class</span><span class="keyword"> public</span><span class="keyword"> final</span> Main</span><br><span class="line"><span class="keyword">.super</span> Object</span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> constructor</span> &lt;init&gt;()V</span><br><span class="line"><span class="keyword">          .registers</span> 1</span><br><span class="line">00000000 <span class="built_in"> invoke-direct </span>      Object-&gt;&lt;init&gt;()V, p0</span><br><span class="line">00000006  return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> static</span> add(Integer, Integer)Integer</span><br><span class="line"><span class="keyword">          .registers</span> 4</span><br><span class="line">00000000 <span class="built_in"> invoke-virtual </span>     Integer-&gt;intValue()I, p0</span><br><span class="line">00000006 <span class="built_in"> move-result </span>        v0</span><br><span class="line">00000008 <span class="built_in"> invoke-virtual </span>     Integer-&gt;intValue()I, p1</span><br><span class="line">0000000E <span class="built_in"> move-result </span>        v1</span><br><span class="line">00000010 <span class="built_in"> add-int/2addr </span>      v0, v1</span><br><span class="line">00000012 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v0</span><br><span class="line">00000018 <span class="built_in"> move-result-object </span> v0</span><br><span class="line">0000001A <span class="built_in"> return-object </span>      v0</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> static</span> main([String)V</span><br><span class="line"><span class="keyword">          .registers</span> 4</span><br><span class="line">00000000 <span class="built_in"> sget-object </span>        v0, System-&gt;out:PrintStream</span><br><span class="line">00000004 <span class="built_in"> const/4 </span>            v1, 1</span><br><span class="line">00000006 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v1</span><br><span class="line">0000000C <span class="built_in"> move-result-object </span> v1</span><br><span class="line">0000000E <span class="built_in"> const/4 </span>            v2, 2</span><br><span class="line">00000010 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v2</span><br><span class="line">00000016 <span class="built_in"> move-result-object </span> v2</span><br><span class="line">00000018 <span class="built_in"> invoke-static </span>      Main-&gt;add(Integer, Integer)Integer, v1, v2</span><br><span class="line">0000001E <span class="built_in"> move-result-object </span> v1</span><br><span class="line">00000020 <span class="built_in"> invoke-virtual </span>     PrintStream-&gt;println(Object)V, v0, v1</span><br><span class="line">00000026  return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br></pre></td></tr></table></figure></p>
+<p>对比可以看出在Java源码中使用<code>Integer</code>类型，会在smali中先转成int类型再进行计算，所以说啊，为了效率，该使用<code>int</code>就用<code>int</code>别整那些花里胡哨的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/Xposed的一些事项/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/22/Xposed的一些事项/" itemprop="url">Xposed的一些事项</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-22T22:10:49+08:00">
+                2018-10-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h5 id="操作的正确的顺序"><a href="#操作的正确的顺序" class="headerlink" title="操作的正确的顺序"></a>操作的正确的顺序</h5><ul>
+<li>安装更新插件，重启系统</li>
+<li>此时Xposed无法load到未启动的app</li>
+<li>启动要注入的应用</li>
+<li>此时可以观察到要被hook的应用已经被Xposed框架load<h5 id="比较合理的编码顺序"><a href="#比较合理的编码顺序" class="headerlink" title="比较合理的编码顺序"></a>比较合理的编码顺序</h5>（1）最开始可以先根据<code>XC_LoadPackage.LoadPackageParam.packageName</code>判断要注入的app是否已经被Xposed框架load<br>（2）然后可以hook<code>ClassLoader.class</code>类中的<code>loadClass()</code>方法，然后再其中判断，要<strong>findAndHook</strong>的类是否已经被加载<br>（3）最后再进行类中方法的hook<h5 id="对于hook第三方应用中的类中的方法参数中包含自定义类类型的参数的问题"><a href="#对于hook第三方应用中的类中的方法参数中包含自定义类类型的参数的问题" class="headerlink" title="对于hook第三方应用中的类中的方法参数中包含自定义类类型的参数的问题"></a>对于hook第三方应用中的类中的方法参数中包含自定义类类型的参数的问题</h5>看下Xposed的<code>findAndHookMethod()</code>方法<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> XC_MethodHook.<span class="function">Unhook <span class="title">findAndHookMethod</span><span class="params">(String className, ClassLoader classLoader, String methodName, Object... parameterTypesAndCallback)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> findAndHookMethod(findClass(className, classLoader), methodName, parameterTypesAndCallback);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>最后一个参数需要给要hook的方法的参数类型列表，对于要hook类似:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Integer <span class="title">doAdd</span><span class="params">(Integer a, Integer b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们在hook的时候写做：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">XposedHelpers.findAndHookMethod(<span class="string">"className"</span>, </span><br><span class="line">	loadPackageParam.classLoader, </span><br><span class="line">	<span class="string">"doAdd"</span>, </span><br><span class="line">	Integer.class, </span><br><span class="line">	<span class="keyword">new</span> XC_MethodHook() &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//do some code</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这里参数类型用的是<code>Integer.class</code>，对于开发者自定义的类作为参数类型的方法，我们可以使用<code>Class clazz = Class.Class.forName(&quot;className&quot;)</code>的方式进行获取，然后用<code>clazz.getName()</code>来进行处理，可以直接传递一个参数类型的字符串进去，如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Class clazz = Class.Class.forName(<span class="string">"className"</span>)</span><br><span class="line">XposedHelpers.findAndHookMethod(<span class="string">"className"</span>, </span><br><span class="line">	loadPackageParam.classLoader, </span><br><span class="line">	<span class="string">"MethodName"</span>, </span><br><span class="line">	clazz.getName(), </span><br><span class="line">	<span class="keyword">new</span> XC_MethodHook() &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//do some code</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>或<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">XposedHelpers.findAndHookMethod(<span class="string">"className"</span>, </span><br><span class="line">	loadPackageParam.classLoader, </span><br><span class="line">	<span class="string">"MethodName"</span>, </span><br><span class="line">	<span class="string">"className"</span> </span><br><span class="line">	<span class="keyword">new</span> XC_MethodHook() &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//do some code</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>注意：通过<code>Class.Class.forName()</code>方式可能会存在ClassNotFound的异常，因为那个时候参数的类型还未load到内存导致的，所以可以采用直接用完整类名的方式。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/19/Java注解（Annotation）/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/19/Java注解（Annotation）/" itemprop="url">Java注解（Annotation）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-19T22:19:29+08:00">
+                2018-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文大量参考这位大佬写的这篇博文：<a href="https://blog.csdn.net/briblue/article/details/73824058" target="_blank" rel="noopener">秒懂，Java 注解 （Annotation）你可以这样学</a>感觉写的真的非常非常好。</p>
+<p>注解是Java SE 5中引入的特性，这个东西通俗点讲就要是给类、方法、变量 <strong>贴标签</strong> 的，你定义好一堆标签（注解），然后在你定义类的时候，给类贴上“标签”，这个时候编译器，或者是其他的什么操作，可以得知这个类被贴上标签，可以做对应的什么处理，用例子介绍吧。</p>
+<h4 id="注解的定义"><a href="#注解的定义" class="headerlink" title="注解的定义"></a>注解的定义</h4><p>和<code>interface</code>有点像，但是需要再在前面加一个<code>@</code>符号：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TestAnnotation &#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样就定义了一个名为<code>TestAnnotation</code>的注解，现在用这个注解给类贴标签啦：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">TestAnnotation</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当然啥都没写，这个标签是一个空标签，后面介绍具体的用法。</p>
+<h4 id="元注解"><a href="#元注解" class="headerlink" title="元注解"></a>元注解</h4><p>元注解的定义是：可以注解到注解上的注解，这种特殊的注解是由系统定义好的，功能确定的注解，专门作用于自定义注解上的特殊注解。</p>
+<h5 id="Retention"><a href="#Retention" class="headerlink" title="@Retention"></a>@Retention</h5><p>这个注解是声明注解的生命周期，分三种情况：</p>
+<ul>
+<li><code>RetentionPolicy.SOURCE</code> 注解只在源码阶段保留，在编译器进行编译时它将被丢弃忽视。 </li>
+<li><code>RetentionPolicy.CLASS</code> 注解只被保留到编译进行的时候，它并不会被加载到 JVM 中。 </li>
+<li><code>RetentionPolicy.RUNTIME</code> 注解可以保留到程序运行的时候，它会被加载进入到 JVM 中，所以在程序运行时可以获取到它们。</li>
+</ul>
+<p>如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TestAnnotation &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样<code>TestAnnotation</code>注解可以在运行时依然被获取到，这个用的很多很多</p>
+<h5 id="Documented"><a href="#Documented" class="headerlink" title="@Documented"></a>@Documented</h5><p>顾名思义，这个元注解肯定是和文档有关。它的作用是能够将注解中的元素包含到 Javadoc 中去。</p>
+<h5 id="Target"><a href="#Target" class="headerlink" title="@Target"></a>@Target</h5><p>Target 是目标的意思，@Target 指定了注解运用的地方，用来指定注解作用的对象，是类、属性、方法、还是局部变量之类的，有一下一些类别：</p>
+<ul>
+<li><code>ElementType.ANNOTATION_TYPE</code> 可以给一个注解进行注解</li>
+<li><code>ElementType.CONSTRUCTOR</code> 可以给构造方法进行注解</li>
+<li><code>ElementType.FIELD</code> 可以给属性进行注解</li>
+<li><code>ElementType.LOCAL_VARIABLE</code> 可以给局部变量进行注解</li>
+<li><code>ElementType.METHOD</code> 可以给方法进行注解</li>
+<li><code>ElementType.PACKAGE</code> 可以给一个包进行注解</li>
+<li><code>ElementType.PARAMETER</code> 可以给一个方法内的参数进行注解</li>
+<li><code>ElementType.TYPE</code> 可以给一个类型进行注解，比如类、接口、枚举</li>
+</ul>
+<p>举个例子：<code>javax.persistence.Table</code>这个注解用来指定一个表的容器的，看下实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> javax.persistence;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.ElementType;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Retention;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.RetentionPolicy;</span><br><span class="line"><span class="keyword">import</span> java.lang.annotation.Target;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.TYPE&#125;)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Table &#123;</span><br><span class="line">    <span class="function">String <span class="title">name</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">catalog</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">schema</span><span class="params">()</span> <span class="keyword">default</span> ""</span>;</span><br><span class="line"></span><br><span class="line">    UniqueConstraint[] uniqueConstraints() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    Index[] indexes() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>用了两个元注解，<code>@Retention(RetentionPolicy.RUNTIME)</code>指明了要作用于运行时，<code>@Target({ElementType.TYPE})</code>指明了这个注解只能作用于类、接口、枚举这些类型上，一般情况下我们就是在定义表的容器的时候使用这个注解，来指定告诉系统或者是其他组件这个类表示的是一个表（表的容器）。</p>
+<h5 id="Inherited"><a href="#Inherited" class="headerlink" title="@Inherited"></a>@Inherited</h5><p>这个注解是用来表示<strong>可以被继承</strong>，意思就是：<code>ClassA</code>是一个被<code>@Inherited</code>注解过的注解<code>@InheritedAnnotation</code>注解的类，那么当<code>ClassB</code>继承了<code>ClassA</code>，<code>ClassB</code>这个类也会拥有<code>@InheritedAnnotation</code>这个注解的信息。</p>
+<h5 id="Repeatable"><a href="#Repeatable" class="headerlink" title="@Repeatable"></a>@Repeatable</h5><p>Repeatable 自然是可重复的意思。@Repeatable 是 Java 1.8 才加进来的，所以算是一个新的特性。<br>沿用博客里面举的例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface</span> Persons &#123;</span><br><span class="line">    Person[]  value();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Repeatable</span>(Persons.class)</span><br><span class="line"><span class="meta">@interface</span> Person&#123;</span><br><span class="line">    String role <span class="keyword">default</span> <span class="string">""</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Person</span>(role=<span class="string">"artist"</span>)</span><br><span class="line"><span class="meta">@Person</span>(role=<span class="string">"coder"</span>)</span><br><span class="line"><span class="meta">@Person</span>(role=<span class="string">"PM"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperMan</span></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其实这里我不是很理解，<code>@Persons</code>和<code>@Person</code>肯定是要互相依赖的，我粗糙的理解下，就是<code>@Persons</code>注解里面的内容是一个<code>@Person</code>注解的数组，但是使用的时候不是传递<code>@Person</code>的数组，而是可以重复的进行<code>@Person</code>的注解，但是对<code>@Person</code>填充不同的值，这样可以更直观的表达被注解的对象具有同一类的但是不同属性的特征。</p>
+<h4 id="注解的属性"><a href="#注解的属性" class="headerlink" title="注解的属性"></a>注解的属性</h4><p>就是注解的成员变量，类似于一个类的成员变量，但是是没有方法的，看下写法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TestAnnotation &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">id</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">msg</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里<code>@TestAnnotation</code>注解包含了两个属性，一个<code>id</code>是<code>int</code>型的，一个是<code>msg</code>是<code>String</code>型的，如何使用呢：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TestAnnotation</span>(id = <span class="number">3</span>, msg = <span class="string">"hello annotation"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>直接在注解后面加个括号，然后按照“key = value”的形式就行了，注解的属性类型可以是8种Java基本数据类型，也可以是类、接口、注解以及他们的数组形式。</p>
+<p>也可以设置属性的默认值：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> TestAnnotation &#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">id</span><span class="params">()</span> <span class="keyword">default</span> -1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">msg</span><span class="params">()</span> <span class="keyword">default</span> "Hi"</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样在使用的过程中只需要：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TestAnnotation</span>()</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样<code>@TestAnnotation</code>注解的 <code>id</code> 属性默认值为 -1，<code>msg</code> 属性默认值为 “Hi”。 </p>
+<p>如果一个注解里面只有一个<code>value</code>这个属性的时候，可以在注解的时候，不指定key的名称，直接在括号里面就赋值了：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Check &#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>语句：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Check</span>(<span class="string">"hi"</span>)</span><br><span class="line"><span class="keyword">int</span> a;</span><br></pre></td></tr></table></figure></p>
+<p>等价于：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Check</span>(value=<span class="string">"hi"</span>)</span><br><span class="line"><span class="keyword">int</span> a;</span><br></pre></td></tr></table></figure></p>
+<p>最后，还需要注意的一种情况是一个注解没有任何属性，比如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Perform &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么在应用这个注解的时候，括号都可以省略：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Perform</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMethod</span><span class="params">()</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Java知名的内置的注解"><a href="#Java知名的内置的注解" class="headerlink" title="Java知名的内置的注解"></a>Java知名的内置的注解</h4><h5 id="Deprecated"><a href="#Deprecated" class="headerlink" title="@Deprecated"></a>@Deprecated</h5><p>这个元素是用来标记过时的元素，想必大家在日常开发中经常碰到。编译器在编译阶段遇到这个注解时会发出提醒警告，告诉开发者正在调用一个过时的元素比如过时的方法、过时的类、过时的成员变量。</p>
+<h5 id="Override"><a href="#Override" class="headerlink" title="@Override"></a>@Override</h5><p>这个大家应该很熟悉了，提示子类要复写父类中被 @Override 修饰的方法。</p>
+<h5 id="SuppressWarnings"><a href="#SuppressWarnings" class="headerlink" title="@SuppressWarnings"></a>@SuppressWarnings</h5><p>阻止警告的意思。之前说过调用被 @Deprecated 注解的方法后，编译器会警告提醒，而有时候开发者会忽略这种警告，他们可以在调用的地方通过 @SuppressWarnings 达到目的。</p>
+<h4 id="注解的提取"><a href="#注解的提取" class="headerlink" title="注解的提取"></a>注解的提取</h4><p>主要有几个方法：<br>注解通过反射获取。首先可以通过 <code>Class</code> 对象的 <code>isAnnotationPresent()</code> 方法判断它是否应用了某个注解<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isAnnotationPresent</span><span class="params">(Class&lt;? extends Annotation&gt; annotationClass)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后通过 <code>getAnnotation()</code> 方法来获取 <code>Annotation</code> 对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;A extends Annotation&gt; <span class="function">A <span class="title">getAnnotation</span><span class="params">(Class&lt;A&gt; annotationClass)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>或者是 <code>getAnnotations()</code> 方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Annotation[] getAnnotations() &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>前一种方法返回指定类型的注解，后一种方法返回注解到这个元素上的所有注解。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TestAnnotation</span>()</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> hasAnnotation = Test.class.isAnnotationPresent(TestAnnotation.class);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ( hasAnnotation ) &#123;</span><br><span class="line">            TestAnnotation testAnnotation = Test.class.getAnnotation(TestAnnotation.class);</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">"id:"</span>+testAnnotation.id());</span><br><span class="line">            System.out.println(<span class="string">"msg:"</span>+testAnnotation.msg());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">id:-<span class="number">1</span></span><br><span class="line">msg:Hi</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子中，只是检阅出了注解在类上的注解，其实属性、方法上的注解照样是可以的。同样还是要假手于反射：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@TestAnnotation</span>(msg=<span class="string">"hello"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Check</span>(value=<span class="string">"hi"</span>)</span><br><span class="line">    <span class="keyword">int</span> a;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Perform</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMethod</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"deprecation"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Hero hero = <span class="keyword">new</span> Hero();</span><br><span class="line">        hero.say();</span><br><span class="line">        hero.speak();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> hasAnnotation = Test.class.isAnnotationPresent(TestAnnotation.class);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> ( hasAnnotation ) &#123;</span><br><span class="line">            TestAnnotation testAnnotation = Test.class.getAnnotation(TestAnnotation.class);</span><br><span class="line">            <span class="comment">//获取类的注解</span></span><br><span class="line">            System.out.println(<span class="string">"id:"</span>+testAnnotation.id());</span><br><span class="line">            System.out.println(<span class="string">"msg:"</span>+testAnnotation.msg());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Field a = Test.class.getDeclaredField(<span class="string">"a"</span>);</span><br><span class="line">            a.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">//获取一个成员变量上的注解</span></span><br><span class="line">            Check check = a.getAnnotation(Check.class);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> ( check != <span class="keyword">null</span> ) &#123;</span><br><span class="line">                System.out.println(<span class="string">"check value:"</span>+check.value());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Method testMethod = Test.class.getDeclaredMethod(<span class="string">"testMethod"</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> ( testMethod != <span class="keyword">null</span> ) &#123;</span><br><span class="line">                <span class="comment">// 获取方法中的注解</span></span><br><span class="line">                Annotation[] ans = testMethod.getAnnotations();</span><br><span class="line">                <span class="keyword">for</span>( <span class="keyword">int</span> i = <span class="number">0</span>;i &lt; ans.length;i++) &#123;</span><br><span class="line">                    System.out.println(<span class="string">"method testMethod annotation:"</span>+ans[i].annotationType().getSimpleName());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</span><br><span class="line">            <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.out.println(e.getMessage());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SecurityException e) &#123;</span><br><span class="line">            <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.out.println(e.getMessage());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">            <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.out.println(e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">id:-<span class="number">1</span></span><br><span class="line">msg:hello</span><br><span class="line">check value:hi</span><br><span class="line">method testMethod annotation:Perform</span><br></pre></td></tr></table></figure></p>
+<h4 id="注解的使用"><a href="#注解的使用" class="headerlink" title="注解的使用"></a>注解的使用</h4><p>官方的解释是：<br>注解是一系列元数据，它提供数据用来解释程序代码，但是注解并非是所解释的代码本身的一部分。注解对于代码的运行效果没有直接影响。</p>
+<p>注解有许多用处，主要如下： </p>
+<ul>
+<li>提供信息给编译器： 编译器可以利用注解来探测错误和警告信息 </li>
+<li>编译阶段时的处理： 软件工具可以用来利用注解信息来生成代码、Html文档或者做其它相应处理。 </li>
+<li>运行时的处理： 某些注解可以在程序运行的时候接受代码的提取</li>
+</ul>
+<p>所以说注解里面只有属性，没有方法啥的，只是一个标签的意义，告诉系统、编译器或者是其他的类你具有什么特点。</p>
+<p>注解主要针对的是编译器和其它工具软件(SoftWare tool)。</p>
+<p>当开发者使用了Annotation 修饰了类、方法、Field 等成员之后，这些 Annotation 不会自己生效，必须由开发者提供相应的代码来提取并处理 Annotation 信息。这些处理提取和处理 Annotation 的代码统称为 APT（Annotation Processing Tool)。</p>
+<p>现在，我们可以给自己答案了，注解有什么用？给谁用？给 编译器或者 APT 用的。</p>
+<p>例子介绍注解在编写一个测试工具的使用：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NoBug</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Jiecha</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">suanShu</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"1234567890"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Jiecha</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">jiafa</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"1+1="</span>+<span class="number">1</span>+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Jiecha</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">jiefa</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"1-1="</span>+(<span class="number">1</span>-<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Jiecha</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">chengfa</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"3 x 5="</span>+ <span class="number">3</span>*<span class="number">5</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Jiecha</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">chufa</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"6 / 0="</span>+ <span class="number">6</span> / <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ziwojieshao</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"我写的程序没有 bug!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注解的定义，很简单：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Jiecha &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这是开发者写的一个类，为了对这个类进行测试，对方法加上了<code>@Jiecha</code>注解，然后编写代码，对拥有注解的方法进行测试：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestTool</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line"></span><br><span class="line">        NoBug testobj = <span class="keyword">new</span> NoBug();</span><br><span class="line"></span><br><span class="line">        Class clazz = testobj.getClass();</span><br><span class="line"></span><br><span class="line">        Method[] method = clazz.getDeclaredMethods();</span><br><span class="line">        <span class="comment">//用来记录测试产生的 log 信息</span></span><br><span class="line">        StringBuilder log = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="comment">// 记录异常的次数</span></span><br><span class="line">        <span class="keyword">int</span> errornum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> ( Method m: method ) &#123;</span><br><span class="line">            <span class="comment">// 只有被 @Jiecha 标注过的方法才进行测试</span></span><br><span class="line">            <span class="keyword">if</span> ( m.isAnnotationPresent( Jiecha.class )) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    m.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">                    m.invoke(testobj, <span class="keyword">null</span>);</span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    <span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">                    <span class="comment">//e.printStackTrace();</span></span><br><span class="line">                    errornum++;</span><br><span class="line">                    log.append(m.getName());</span><br><span class="line">                    log.append(<span class="string">" "</span>);</span><br><span class="line">                    log.append(<span class="string">"has error:"</span>);</span><br><span class="line">                    log.append(<span class="string">"\n\r  caused by "</span>);</span><br><span class="line">                    <span class="comment">//记录测试过程中，发生的异常的名称</span></span><br><span class="line">                    log.append(e.getCause().getClass().getSimpleName());</span><br><span class="line">                    log.append(<span class="string">"\n\r"</span>);</span><br><span class="line">                    <span class="comment">//记录测试过程中，发生的异常的具体信息</span></span><br><span class="line">                    log.append(e.getCause().getMessage());</span><br><span class="line">                    log.append(<span class="string">"\n\r"</span>);</span><br><span class="line">                &#125; </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        log.append(clazz.getSimpleName());</span><br><span class="line">        log.append(<span class="string">" has  "</span>);</span><br><span class="line">        log.append(errornum);</span><br><span class="line">        log.append(<span class="string">" error."</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 生成测试报告</span></span><br><span class="line">        System.out.println(log.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1234567890</span><br><span class="line">1+1=11</span><br><span class="line">1-1=0</span><br><span class="line">3 x 5=15</span><br><span class="line">chufa has error:</span><br><span class="line"></span><br><span class="line">  caused by ArithmeticException</span><br><span class="line"></span><br><span class="line">/ by zero</span><br><span class="line"></span><br><span class="line">NoBug has  1 error.</span><br></pre></td></tr></table></figure></p>
+<p>显然<code>chufa()</code>有个除零异常，被检查捕获到了<br>这里可以看出，对于注解的使用，还是需要开发者来编写具体的利用代码，注解只是负责<strong>打个标签</strong></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>很简单就是打标签，但是打了标签，对这种类型的标签做了啥操作，这个就是精髓，这个可以看看知名的注解都是啥，解决了什么实际问题，准备看下<code>Spring Boot</code>框架中的注解。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/29/Android6-0-Xposed开发/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/29/Android6-0-Xposed开发/" itemprop="url">Android6.0 Xposed开发</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-29T21:40:53+08:00">
+                2018-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="安装Xposed模块"><a href="#安装Xposed模块" class="headerlink" title="安装Xposed模块"></a>安装Xposed模块</h4><p>自行解决</p>
+<h4 id="下载Xposed相关jar文件"><a href="#下载Xposed相关jar文件" class="headerlink" title="下载Xposed相关jar文件"></a>下载Xposed相关jar文件</h4><p>下载链接：<a href="https://bintray.com/rovo89/de.robv.android.xposed/api" target="_blank" rel="noopener">https://bintray.com/rovo89/de.robv.android.xposed/api</a></p>
+<h4 id="导入下载的jar文件"><a href="#导入下载的jar文件" class="headerlink" title="导入下载的jar文件"></a>导入下载的jar文件</h4><p><img src="/2018/08/29/Android6-0-Xposed开发/1535546817828.png" alt="lbxx"><br>将jar文件拷贝到libs目录中<br><img src="/2018/08/29/Android6-0-Xposed开发/1535546876252.png" alt="lbxx"><br>点击jar包，鼠标右键，Add as library，此时在工程的<code>build.gradle</code>文件中将会出现：<br><img src="/2018/08/29/Android6-0-Xposed开发/1535547092548.png" alt="lbxx"><br>注意这两个地方，要将<code>compile</code>改成<code>provided</code>，这样做的目的是在编译时使用这些文件，但是在打包时jar文件不会被打包进apk，因为在安装Xposed框架和Xposed Installer的时候就已经带上这个jar了，如果此时再打包进来，运行时就会有冲突，切记~</p>
+<h4 id="编写hook代码"><a href="#编写hook代码" class="headerlink" title="编写hook代码"></a>编写hook代码</h4><p>创建一个类，用来编写进行hook的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.antiy.demo.xpdemo;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by aspilin on 2018/8/29.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> android.app.Activity;</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> de.robv.android.xposed.IXposedHookLoadPackage;</span><br><span class="line"><span class="keyword">import</span> de.robv.android.xposed.XC_MethodHook;</span><br><span class="line"><span class="keyword">import</span> de.robv.android.xposed.XposedBridge;</span><br><span class="line"><span class="keyword">import</span> de.robv.android.xposed.XposedHelpers;</span><br><span class="line"><span class="keyword">import</span> de.robv.android.xposed.callbacks.XC_LoadPackage;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadHooker</span> <span class="keyword">implements</span> <span class="title">IXposedHookLoadPackage</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleLoadPackage</span><span class="params">(<span class="keyword">final</span> XC_LoadPackage.LoadPackageParam loadPackageParam)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line"></span><br><span class="line">        XposedBridge.log(<span class="string">"loadhooker::handleLoadPackage()"</span>);</span><br><span class="line">        System.out.println(<span class="string">"loadhooker::handleLoadPackage()"</span>);</span><br><span class="line"></span><br><span class="line">        XposedHelpers.findAndHookMethod(Activity.class, <span class="string">"onCreate"</span>, Bundle.class, <span class="keyword">new</span> XC_MethodHook() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">beforeHookedMethod</span><span class="params">(MethodHookParam param)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">                XposedBridge.log(loadPackageParam.packageName + <span class="string">" : onCreate begin"</span>);</span><br><span class="line">                System.out.println(loadPackageParam.packageName + <span class="string">" : onCreate begin"</span>);</span><br><span class="line">                <span class="keyword">super</span>.beforeHookedMethod(param);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">afterHookedMethod</span><span class="params">(MethodHookParam param)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">                System.out.println(loadPackageParam.packageName + <span class="string">" : onCreate end"</span>);</span><br><span class="line">                <span class="keyword">super</span>.afterHookedMethod(param);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>简单介绍下，Xposed组件会自动回调重新的<code>handleLoadPackage()</code>方法，<code>XposedHelpers.findAndHookMethod(a, b, c, d)</code>方法的意思就是：将会在<code>a</code>这个类中，寻找<code>b</code>方法，并且hook这个方法开始调用时和方法结束时，hook的过程由参数<code>d</code>这个<code>XC_MethodHook</code>类来描述，这里需要实现这个类的<code>beforeHookedMethod()</code>和<code>afterHookedMethod()</code>方法，分别就对应函数开始时和函数结束时，这里我们就是简单的做一下print。</p>
+<h4 id="创建提供给Xposed框架读取入口点的配置文件"><a href="#创建提供给Xposed框架读取入口点的配置文件" class="headerlink" title="创建提供给Xposed框架读取入口点的配置文件"></a>创建提供给Xposed框架读取入口点的配置文件</h4><p>创建<code>asset</code>目录，然后在其下新建一个文件，文件名为：<code>xposed_init</code>，这个文件的名字是固定的，方便Xposed框架找到，然后从中读取配置，里面只写一句话：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.antiy.demo.xpdemo.LoadHooker</span><br></pre></td></tr></table></figure></p>
+<p>这会告诉Xposed框架，哪里将会是入口点</p>
+<h4 id="在AM中创建Xposed插件的配置信息"><a href="#在AM中创建Xposed插件的配置信息" class="headerlink" title="在AM中创建Xposed插件的配置信息"></a>在AM中创建Xposed插件的配置信息</h4><p>在<code>manifest</code>文件中的<code>application</code>标签中加入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 是否是xposed模块，xposed根据这个来判断是否是模块 --&gt;</span><br><span class="line">&lt;meta-data</span><br><span class="line">    android:name=&quot;xposedmodule&quot;</span><br><span class="line">    android:value=&quot;true&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 模块描述，显示在xposed模块列表那里第二行 --&gt;</span><br><span class="line">&lt;meta-data</span><br><span class="line">    android:name=&quot;xposeddescription&quot;</span><br><span class="line">    android:value=&quot;测试Xposed模块&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 最低xposed版本号(lib文件名可知) --&gt;</span><br><span class="line">&lt;meta-data</span><br><span class="line">    android:name=&quot;xposedminversion&quot;</span><br><span class="line">    android:value=&quot;30&quot; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>第一个字段会告知Xposed框架，我是一个Xposed插件程序，第二个人字段会在Xposed Installer中的插件列表中显示，第三个字段表名该Xposed插件程序依赖的最低Xposed版本。</p>
+<h4 id="关闭AS的Instant-Run"><a href="#关闭AS的Instant-Run" class="headerlink" title="关闭AS的Instant Run"></a>关闭AS的Instant Run</h4><p><code>Instant Run</code>会采用热更新代码的方式，可能有些地方不能被及时的更新到apk中，因此记得关闭此选项<br><img src="/2018/08/29/Android6-0-Xposed开发/1535548526894.png" alt="lbxx"></p>
+<h4 id="跑起来"><a href="#跑起来" class="headerlink" title="跑起来"></a>跑起来</h4><p>安装应用，Xposed框架会检测到一个新的Xposed插件被安装了，提示你是否要重启，选择重启，重启之后打开Xposed Installer看日志：<br><img src="/2018/08/29/Android6-0-Xposed开发/1535548991851.png" alt="lbxx"><br>我写了一个只有一个空Activity的Demo，启动之后的hook效果就是这样的，只是奇怪<code>onCreate end</code>为啥没有被hook，明天再研究下，不过大体应该是通顺了，然后就可以做很多很多的事儿了。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/22/Tcpdumper开发笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/22/Tcpdumper开发笔记/" itemprop="url">Tcpdumper开发笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-22T21:29:26+08:00">
+                2018-08-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>最近组里的同学说Shark（一款在Android上抓包的应用）在他的Nexus 5X的Android6.0系统上不能用，主要就是抓包完了之后，pcap文件保存下来的文件没有内容（文件大小是0byte），刚好前几天我妹子说她的Shark不能用了，报了个错，所以我想看看咋回事儿不能用了，要不再整个可以用的，于是就写个这个东西。</p>
+<h4 id="tcpdump"><a href="#tcpdump" class="headerlink" title="tcpdump"></a>tcpdump</h4><p>tcpdump是Linux系统中一个非常重要的工具，以一个ELF文件的形式存在，不过貌似这个东西开源了，之前在Windows上做过抓包的工具，是用WinPcap驱动提供的接口抓的，WinPcap应该是在网卡驱动上加了个Filter，然后copy一份流量通过接口提供给上层的，tcpdump单单一个ELF文件，我确实不知道他是如何实现数据包捕获的，有空还是要看下代码的。这里我们编写的工具的核心实现就是利用tcpdump来做。</p>
+<h4 id="大致思路"><a href="#大致思路" class="headerlink" title="大致思路"></a>大致思路</h4><p>没有看过Shark的代码，但是猜测就是用的tcpdump，在他的应用目录下果然看见了tcpdump文件，所以我也是这么做的，没去仔细研究为啥他在高版本系统不能用了，说下我怎么做的，很简单：</p>
+<ul>
+<li>释放<code>tcpdump</code>文件到系统中</li>
+<li>给<code>tcpdump</code>文件加权限</li>
+<li>利用<code>Runtime.getRuntime().exec()</code>方法执行命令启动<code>tcpdump</code></li>
+<li>kill掉tcpdump进程，保存生成的pcap包</li>
+</ul>
+<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><p>流程思路很简单，但是实际做的过程中遇到蛮多问题的：</p>
+<p><strong>1.文件无法释放到<code>/data/local/tmp/</code>目录下</strong><br>抓包应用肯定是要有root权限的，所以可以随意使用命令的方式操作文件，但是tcpdump文件是在编译的时候被放到工程的asset目录下，我们代码里面必须先释放这个文件到一个本地目录下，最开始我选择了释放到<code>/data/local/tmp/</code>目录下，因为网上很多大佬是这么搞得，但是高版本的APP已经没有权限在<code>/data/local/tmp/</code>目录中<code>Create File</code>了，可以<code>new File</code>但是当执行<code>File.CreateNewFile()</code>方法时就会报错，报错说没有权限，其实读写SD卡的权限已经有了，而且<code>/data/local/tmp/</code>目录也不在SD卡中，据说需要SystemApp的级别才能有这个权限，最后干脆调用<code>this.getFilesDir()</code>方法，直接释放到应用自身的目录的中去。</p>
+<p><strong>2.</strong>关于在<code>Runtime.getRuntime().exec()</code>中执行会阻塞的方法的处理办法<br>这里存在两个问题：1.抓包的命令执行后，如何获取命令行返回的内容？ 2.如何终止抓包？<br>最开始直接在UI线程支持命令，命令被阻塞，UI线程直接卡着不动，显然是要开一个线程的，在新的线程中执行<code>Runtime.getRuntime().exec()</code>命令，但是想获取控制台源源不断返回的数据怎么办呢，看下面一个Demo：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.DataOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Runner</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Process process = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    DataOutputStream os = <span class="keyword">null</span>;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.run();</span><br><span class="line">        System.out.println(<span class="string">"线程启动"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            process = Runtime.getRuntime().exec(<span class="string">"ping www.baidu.com"</span>);</span><br><span class="line">            os = <span class="keyword">new</span> DataOutputStream(process.getOutputStream());</span><br><span class="line"></span><br><span class="line">            BufferedReader successResult = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(</span><br><span class="line">                    process.getInputStream()));</span><br><span class="line"></span><br><span class="line">            String s;</span><br><span class="line">            <span class="keyword">while</span> ((s = successResult.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                System.out.println(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"执行线程结束"</span>);</span><br><span class="line">        <span class="keyword">if</span> (os != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                os.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (process != <span class="keyword">null</span>) &#123;</span><br><span class="line">            process.destroy();</span><br><span class="line">            process = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里创建一个线程，执行<code>ping www.baidu.com</code>的命令，这个命令执行后会一直阻塞，知道控制台接收到<code>control + c</code>，才会退出，这个和<code>tcpdump</code>执行的时候一毛一样（其实不一样，后面说），这里通过<code>BufferedReader</code>可以不断的从控制台的输出流中读取内容，当然程序也就会阻塞到这里，我们定义了一个<code>doStop()</code>方法，主要就是销毁因为执行命令生成的<code>process</code>对象，他被销毁了，执行cmd命令的线程自然也会被终止销毁。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Runner r = <span class="keyword">new</span> Runner();</span><br><span class="line">        r.start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        r.doStop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>main</code>函数中测试一下，看执行结果，还是比较舒服的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">线程启动</span><br><span class="line">PING www.a.shifen.com (61.135.169.125) 56(84) bytes of data.</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=1 ttl=52 time=74.1 ms</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=2 ttl=52 time=23.7 ms</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=3 ttl=52 time=26.7 ms</span><br><span class="line">执行线程结束</span><br></pre></td></tr></table></figure></p>
+<p>但是但是但是，当我把这片逻辑移植到工程中的时候发现，fuck，执行cmd命令的进程确实被关掉了，但是生成的pcap文件大小是0byte，这就说明执行的<code>tcpdump</code>并没有消停啊，这就和<code>ping www.baidu.com</code>不一样了啊，执行<code>top</code>命令一看，果然<code>tcpdump</code>还在跑着呢，找到<code>pid</code>，手动执行<code>kill [pid]</code>，果然文件就有大小了，那咋整，没办法啊，找到一个命令<code>ps -C [command]</code>可以查看指定command的进程信息，稍微处理下，从返回的信息中提取出<code>PID</code>，然后调用<code>Runtime.getRuntime().exec()</code>执行<code>kill [pid]</code>命令，杀之就可以了。这里很疑惑是为啥，当时先猜是不是<code>tcpdump</code>是不是内部开了新的进程去执行命令，然后还设置了什么不随爸爸挂掉儿子也挂掉的东西（我其实不确定是不是有这种机制的），后来发现如果在抓着包，把app杀掉，跑着的<code>tcpdump</code>就也自动停了，我也是见了鬼了，可能是我忽略了什么细节，估计要看下<code>tcpdump</code>的源码才能搞明白吧。</p>
+<p><strong>3.一个小问题，就是子线程更新UI主线程中的控件的问题</strong><br>还是开发做的少了，这种基本操作都没有搞好，不过还好我遇到这个问题之后就想到了貌似之前就看到过用<code>Handler</code>解决这个问题的情况，在UI线程声明一个<code>Handler</code>类型的成员变量，但是要记得加上<code>final</code>关键字，要不然传递实例到子进程中的时候，尼玛这个东西在用的时候会是<code>null</code>。我猜测在UI线程构造一个<code>final</code>关键字的控件的实例，然后传递到子线程，估计也可以更新，没具体试，但是感觉没有用<code>Handler</code>优雅。</p>
+<p>代码放到内部的git系统中了，明儿让他们用用，看有没有bug。。。。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/21/Android6-0下动态加载apk、dex、jar原理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/21/Android6-0下动态加载apk、dex、jar原理/" itemprop="url">Android6.0下动态加载apk、dex、jar原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-21T21:32:57+08:00">
+                2018-08-21
               </time>
             
 
@@ -342,7 +1185,7 @@
 <p>构造好的载入内存的<code>DexFile</code>对象实例被放置到了一个<code>Element[]</code>类型的容器中返回给了<code>public DexPathList(ClassLoader definingContext, String dexPath, String libraryPath, File optimizedDirectory)</code>构造方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DexPathList</span><span class="params">(ClassLoader definingContext, String dexPath,</span></span></span><br><span class="line"><span class="function"><span class="params">            String libraryPath, File optimizedDirectory)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (definingContext == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"definingContext == null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (dexPath == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"dexPath == null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (optimizedDirectory != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!optimizedDirectory.exists())  &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                    <span class="string">"optimizedDirectory doesn't exist: "</span></span><br><span class="line">                    + optimizedDirectory);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!(optimizedDirectory.canRead()</span><br><span class="line">                        &amp;&amp; optimizedDirectory.canWrite())) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(</span><br><span class="line">                    <span class="string">"optimizedDirectory not readable/writable: "</span></span><br><span class="line">                    + optimizedDirectory);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.definingContext = definingContext;</span><br><span class="line"></span><br><span class="line">    ArrayList&lt;IOException&gt; suppressedExceptions = <span class="keyword">new</span> ArrayList&lt;IOException&gt;();</span><br><span class="line">    <span class="comment">// save dexPath for BaseDexClassLoader</span></span><br><span class="line">    <span class="keyword">this</span>.dexElements = makePathElements(splitDexPath(dexPath), optimizedDirectory,</span><br><span class="line">                                        suppressedExceptions);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Native libraries may exist in both the system and</span></span><br><span class="line">    <span class="comment">// application library paths, and we use this search order:</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">//   1. This class loader's library path for application libraries (libraryPath):</span></span><br><span class="line">    <span class="comment">//   1.1. Native library directories</span></span><br><span class="line">    <span class="comment">//   1.2. Path to libraries in apk-files</span></span><br><span class="line">    <span class="comment">//   2. The VM's library path from the system property for system libraries</span></span><br><span class="line">    <span class="comment">//      also known as java.library.path</span></span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// This order was reversed prior to Gingerbread; see http://b/2933456.</span></span><br><span class="line">    <span class="keyword">this</span>.nativeLibraryDirectories = splitPaths(libraryPath, <span class="keyword">false</span>);</span><br><span class="line">    <span class="keyword">this</span>.systemNativeLibraryDirectories =</span><br><span class="line">            splitPaths(System.getProperty(<span class="string">"java.library.path"</span>), <span class="keyword">true</span>);</span><br><span class="line">    List&lt;File&gt; allNativeLibraryDirectories = <span class="keyword">new</span> ArrayList&lt;&gt;(nativeLibraryDirectories);</span><br><span class="line">    allNativeLibraryDirectories.addAll(systemNativeLibraryDirectories);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.nativeLibraryPathElements = makePathElements(allNativeLibraryDirectories, <span class="keyword">null</span>,</span><br><span class="line">                                                      suppressedExceptions);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (suppressedExceptions.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.dexElementsSuppressedExceptions =</span><br><span class="line">            suppressedExceptions.toArray(<span class="keyword">new</span> IOException[suppressedExceptions.size()]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        dexElementsSuppressedExceptions = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>最终这个存放实例化<code>DexFile</code>对象的容器被赋值给了<code>DexPathList.dexElements</code>成员当中，网上回朔到<code>BaseDexClassLoader</code>类的构造方法中去<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">BaseDexClassLoader</span><span class="params">(String dexPath, File optimizedDirectory,</span></span></span><br><span class="line"><span class="function"><span class="params">            String libraryPath, ClassLoader parent)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(parent);</span><br><span class="line">    <span class="keyword">this</span>.pathList = <span class="keyword">new</span> DexPathList(<span class="keyword">this</span>, dexPath, libraryPath, optimizedDirectory);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>构造的<code>DexPathList</code>实例被赋值给了<code>BaseDexClassLoader.pathList</code>成员变量中，在往前回朔就到了<code>DexClassLoader</code>类的构造方法中，自此就已经基本完成了，根据dex文件加载文件到内存的所有工作。</p>
-<p>大致的流程图如下，省略部分细节：<br><img src="/2018/11/12/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png" alt="lbxx"></p>
+<p>大致的流程图如下，省略部分细节：<br><img src="/2018/08/21/Android6-0下动态加载apk、dex、jar原理/ART动态加载dex_apk_jar.png" alt="lbxx"></p>
 <p>下一篇，我们看从已经加载到内存中的dex文件中获取class的实现</p>
 
           
@@ -392,7 +1235,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Android动态加载类/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/19/Ubuntu16-04-LTS-编译Android6-0源码，刷机Nexus-6P/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -411,7 +1254,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/12/Android动态加载类/" itemprop="url">Android动态加载类</a></h1>
+                <a class="post-title-link" href="/2018/08/19/Ubuntu16-04-LTS-编译Android6-0源码，刷机Nexus-6P/" itemprop="url">Ubuntu16.04 LTS 编译Android6.0源码，刷机Nexus 6P</a></h1>
         
 
         <div class="post-meta">
@@ -423,8 +1266,151 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-12T21:30:53+08:00">
-                2018-11-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-19T21:45:08+08:00">
+                2018-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考两篇博客才少走很多很多弯路，十分十分的感谢！<br><a href="https://blog.csdn.net/fuchaosz/article/details/51487585" target="_blank" rel="noopener">[Android 编译(一)] Ubuntu 16.04 LTS 成功编译 Android 6.0 源码教程</a><br><a href="https://blog.csdn.net/fuchaosz/article/details/52473660" target="_blank" rel="noopener">[Android编译(二)] 从谷歌官网下载android 6.0源码、编译并刷入nexus 6p手机</a></p>
+<p>自主编译源码的需求主要有三个方面，两个显式需求：实现脱壳方案、对Framework层的关键API插桩，一个隐式需求：了解Android系统底层结构和各种实现逻辑。</p>
+<h5 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h5><ul>
+<li><strong>Ubuntu主机</strong>：最好不要是虚拟机，配置能有多高有多高（和编译速度有关），存储也是越大越好（100GB+，因为源码很大），我选的是Ubuntu16.04版本的，网上有不少是Ubuntu14版本的教程，我找的是16.04版本的教程，所以就选的这个装的。</li>
+<li><strong>Nexus系列手机</strong>：这个东西主要是为了保证有现成的驱动可以用，我手边有Nexus5、5X、6，公司的测试机比较多，可以去TB上买，我看了下Nexus5也就卖一两百块钱一部，搞个做测试机还是蛮舒服的。</li>
+<li><strong>梯子</strong>：这个东西怎么说，最好还是有吧，我竟可能的避免大文件从墙外下载，但是有些东西还是要访问以下墙外的网站的</li>
+<li><strong>心态</strong>：要稳住，下载代码，编译、刷机啥的还是蛮多坑的，其实我照着大佬的博客走，已经少了很多的坑了，但是依然不是很顺利，所以心态一定要稳住</li>
+</ul>
+<h5 id="Ubuntu安装"><a href="#Ubuntu安装" class="headerlink" title="Ubuntu安装"></a>Ubuntu安装</h5><p>略…</p>
+<h5 id="源码下载"><a href="#源码下载" class="headerlink" title="源码下载"></a>源码下载</h5><p>这个坑了我两天多的时间，按照博客里面博主给的连接下载的百度网盘中的代码lunch之后发现竟然没有我需要的版本，只能去google官网下载，尼玛用官网提供的repo工具同步下载代码，尼玛疯狂404，心态接近爆炸，我就在想不可能大家都是这么下的啊，百度一下你就知道，如果得知中科大和清华都有源，直接日到<a href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/" target="_blank" rel="noopener">清华源的AOSP部分</a>，对着教程直接一通操作，下载了将近一天，终于是下载下来了</p>
+<p><a href="https://source.android.com/source/build-numbers#source-code-tags-and-builds" target="_blank" rel="noopener">源代码标记和细分版本（手机设备对应的系统版本的细分版本对照表格）</a></p>
+<h5 id="配置环境和必要组件"><a href="#配置环境和必要组件" class="headerlink" title="配置环境和必要组件"></a>配置环境和必要组件</h5><ul>
+<li>先换源，换成阿里的源，这样安装必要的组件软件的时候下载速度回更快，参考文首的博客第一篇，操作一下</li>
+<li>然后安装各种依赖，参考参考文首的博客第一篇，都是大佬爬坑总结出来的，珍惜之~</li>
+<li>接着安装open JDK7，参考参考文首的博客第一篇，大佬说是从Android6.0开始官方编译源码开始使用open JDK了，可能是Google怕和Oracle扯皮吧，装就完事儿了<h5 id="修改源码文件"><a href="#修改源码文件" class="headerlink" title="修改源码文件"></a>修改源码文件</h5>大佬说把<code>mydroid/art/build/Android.common_build.mk</code>文件中的第75行的<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifneq ($(WITHOUT_HOST_CLANG),<span class="keyword">true</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>改成<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifeq ($(WITHOUT_HOST_CLANG),<span class="keyword">false</span>)</span><br></pre></td></tr></table></figure></p>
+<p>我眼瞎，只瞧见后面的true改成false，没看清前面的<code>ifneq</code>还要改成<code>ifeq</code>，第一次编译的时候报错了，莫名其妙，搞了半天，才发现是这里出问题了</p>
+<h5 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h5><p>同样参考参考文首的博客第一篇<br>在做<code>lunch</code>命令选择编译目标时，需要注意你的编译目标，只在模拟器中运行就直接选第一个就行，我用的是Nexus 6P，所以选的就是<code>aosp_angler-userdebug</code>这一项，具体设备选择具体编译目标</p>
+<h5 id="驱动问题"><a href="#驱动问题" class="headerlink" title="驱动问题"></a>驱动问题</h5><p>由于我的三点动机都不牵扯对驱动层代码的修改问题，所以就比较省事儿了，直接下载对应系统版本和设备的工厂镜像包，解压取出<code>vendor.img</code>文件当做驱动刷进去就可以了，工厂镜像要对应好你下载的源码的细分版本：<a href="https://developers.google.com/android/images" target="_blank" rel="noopener">原生系统工厂镜像</a></p>
+<h5 id="刷机"><a href="#刷机" class="headerlink" title="刷机"></a>刷机</h5><p>照着博客第二篇操作就可以了<br>不过有个问题就是，在Ubuntu下当进入fastboot模式下找不到设备的错误时，报错类似如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt; waiting for any device &gt;</span><br></pre></td></tr></table></figure></p>
+<p>博主给的方案是给fastboot命令加权限，还可以想这篇<a href="https://blog.csdn.net/maosidiaoxian/article/details/22661725" target="_blank" rel="noopener">博文</a>中最后说的那样处理，也十分有效。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>照着教程来基本还是很舒服的，基本遇到啥大坑，就是源码下载和编译太耗时了，针对自己编译vendor.img文件的问题，之后还是要尝试搞一下，目前先把插桩的东西做一下吧。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/Android动态加载类/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/13/Android动态加载类/" itemprop="url">Android动态加载类</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-13T21:30:53+08:00">
+                2018-08-13
               </time>
             
 
@@ -525,7 +1511,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/Tcpdumper开发笔记/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/Android加固（一）/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -544,7 +1530,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/12/Tcpdumper开发笔记/" itemprop="url">Tcpdumper开发笔记</a></h1>
+                <a class="post-title-link" href="/2018/08/07/Android加固（一）/" itemprop="url">Android加固（一）</a></h1>
         
 
         <div class="post-meta">
@@ -556,8 +1542,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-12T21:29:26+08:00">
-                2018-11-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-07T21:39:12+08:00">
+                2018-08-07
               </time>
             
 
@@ -596,23 +1582,21 @@
       
         
           
-            <p>最近组里的同学说Shark（一款在Android上抓包的应用）在他的Nexus 5X的Android6.0系统上不能用，主要就是抓包完了之后，pcap文件保存下来的文件没有内容（文件大小是0byte），刚好前几天我妹子说她的Shark不能用了，报了个错，所以我想看看咋回事儿不能用了，要不再整个可以用的，于是就写个这个东西。</p>
-<h4 id="tcpdump"><a href="#tcpdump" class="headerlink" title="tcpdump"></a>tcpdump</h4><p>tcpdump是Linux系统中一个非常重要的工具，以一个ELF文件的形式存在，不过貌似这个东西开源了，之前在Windows上做过抓包的工具，是用WinPcap驱动提供的接口抓的，WinPcap应该是在网卡驱动上加了个Filter，然后copy一份流量通过接口提供给上层的，tcpdump单单一个ELF文件，我确实不知道他是如何实现数据包捕获的，有空还是要看下代码的。这里我们编写的工具的核心实现就是利用tcpdump来做。</p>
-<h4 id="大致思路"><a href="#大致思路" class="headerlink" title="大致思路"></a>大致思路</h4><p>没有看过Shark的代码，但是猜测就是用的tcpdump，在他的应用目录下果然看见了tcpdump文件，所以我也是这么做的，没去仔细研究为啥他在高版本系统不能用了，说下我怎么做的，很简单：</p>
-<ul>
-<li>释放<code>tcpdump</code>文件到系统中</li>
-<li>给<code>tcpdump</code>文件加权限</li>
-<li>利用<code>Runtime.getRuntime().exec()</code>方法执行命令启动<code>tcpdump</code></li>
-<li>kill掉tcpdump进程，保存生成的pcap包</li>
+            <h3 id="大致步骤"><a href="#大致步骤" class="headerlink" title="大致步骤"></a>大致步骤</h3><ul>
+<li>编写待加固apk程序</li>
+<li>编写脱壳程序</li>
+<li>编写绑定程序</li>
+<li>用绑定程序将待加固apk程序加密并绑定到脱壳程序的dex文件后</li>
+<li>将dex已经被绑定上文件的脱壳程序进行签名</li>
 </ul>
-<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><p>流程思路很简单，但是实际做的过程中遇到蛮多问题的：</p>
-<p><strong>1.文件无法释放到<code>/data/local/tmp/</code>目录下</strong><br>抓包应用肯定是要有root权限的，所以可以随意使用命令的方式操作文件，但是tcpdump文件是在编译的时候被放到工程的asset目录下，我们代码里面必须先释放这个文件到一个本地目录下，最开始我选择了释放到<code>/data/local/tmp/</code>目录下，因为网上很多大佬是这么搞得，但是高版本的APP已经没有权限在<code>/data/local/tmp/</code>目录中<code>Create File</code>了，可以<code>new File</code>但是当执行<code>File.CreateNewFile()</code>方法时就会报错，报错说没有权限，其实读写SD卡的权限已经有了，而且<code>/data/local/tmp/</code>目录也不在SD卡中，据说需要SystemApp的级别才能有这个权限，最后干脆调用<code>this.getFilesDir()</code>方法，直接释放到应用自身的目录的中去。</p>
-<p><strong>2.</strong>关于在<code>Runtime.getRuntime().exec()</code>中执行会阻塞的方法的处理办法<br>这里存在两个问题：1.抓包的命令执行后，如何获取命令行返回的内容？ 2.如何终止抓包？<br>最开始直接在UI线程支持命令，命令被阻塞，UI线程直接卡着不动，显然是要开一个线程的，在新的线程中执行<code>Runtime.getRuntime().exec()</code>命令，但是想获取控制台源源不断返回的数据怎么办呢，看下面一个Demo：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.DataOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Runner</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Process process = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    DataOutputStream os = <span class="keyword">null</span>;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.run();</span><br><span class="line">        System.out.println(<span class="string">"线程启动"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            process = Runtime.getRuntime().exec(<span class="string">"ping www.baidu.com"</span>);</span><br><span class="line">            os = <span class="keyword">new</span> DataOutputStream(process.getOutputStream());</span><br><span class="line"></span><br><span class="line">            BufferedReader successResult = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(</span><br><span class="line">                    process.getInputStream()));</span><br><span class="line"></span><br><span class="line">            String s;</span><br><span class="line">            <span class="keyword">while</span> ((s = successResult.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                System.out.println(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"执行线程结束"</span>);</span><br><span class="line">        <span class="keyword">if</span> (os != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                os.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (process != <span class="keyword">null</span>) &#123;</span><br><span class="line">            process.destroy();</span><br><span class="line">            process = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里创建一个线程，执行<code>ping www.baidu.com</code>的命令，这个命令执行后会一直阻塞，知道控制台接收到<code>control + c</code>，才会退出，这个和<code>tcpdump</code>执行的时候一毛一样（其实不一样，后面说），这里通过<code>BufferedReader</code>可以不断的从控制台的输出流中读取内容，当然程序也就会阻塞到这里，我们定义了一个<code>doStop()</code>方法，主要就是销毁因为执行命令生成的<code>process</code>对象，他被销毁了，执行cmd命令的线程自然也会被终止销毁。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Runner r = <span class="keyword">new</span> Runner();</span><br><span class="line">        r.start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        r.doStop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><code>main</code>函数中测试一下，看执行结果，还是比较舒服的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">线程启动</span><br><span class="line">PING www.a.shifen.com (61.135.169.125) 56(84) bytes of data.</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=1 ttl=52 time=74.1 ms</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=2 ttl=52 time=23.7 ms</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=3 ttl=52 time=26.7 ms</span><br><span class="line">执行线程结束</span><br></pre></td></tr></table></figure></p>
-<p>但是但是但是，当我把这片逻辑移植到工程中的时候发现，fuck，执行cmd命令的进程确实被关掉了，但是生成的pcap文件大小是0byte，这就说明执行的<code>tcpdump</code>并没有消停啊，这就和<code>ping www.baidu.com</code>不一样了啊，执行<code>top</code>命令一看，果然<code>tcpdump</code>还在跑着呢，找到<code>pid</code>，手动执行<code>kill [pid]</code>，果然文件就有大小了，那咋整，没办法啊，找到一个命令<code>ps -C [command]</code>可以查看指定command的进程信息，稍微处理下，从返回的信息中提取出<code>PID</code>，然后调用<code>Runtime.getRuntime().exec()</code>执行<code>kill [pid]</code>命令，杀之就可以了。这里很疑惑是为啥，当时先猜是不是<code>tcpdump</code>是不是内部开了新的进程去执行命令，然后还设置了什么不随爸爸挂掉儿子也挂掉的东西（我其实不确定是不是有这种机制的），后来发现如果在抓着包，把app杀掉，跑着的<code>tcpdump</code>就也自动停了，我也是见了鬼了，可能是我忽略了什么细节，估计要看下<code>tcpdump</code>的源码才能搞明白吧。</p>
-<p><strong>3.一个小问题，就是子线程更新UI主线程中的控件的问题</strong><br>还是开发做的少了，这种基本操作都没有搞好，不过还好我遇到这个问题之后就想到了貌似之前就看到过用<code>Handler</code>解决这个问题的情况，在UI线程声明一个<code>Handler</code>类型的成员变量，但是要记得加上<code>final</code>关键字，要不然传递实例到子进程中的时候，尼玛这个东西在用的时候会是<code>null</code>。我猜测在UI线程构造一个<code>final</code>关键字的控件的实例，然后传递到子线程，估计也可以更新，没具体试，但是感觉没有用<code>Handler</code>优雅。</p>
-<p>代码放到内部的git系统中了，明儿让他们用用，看有没有bug。。。。</p>
+<h3 id="加固原理"><a href="#加固原理" class="headerlink" title="加固原理"></a>加固原理</h3><p><code>source_apk</code> ：待加固apk<br><code>packing</code> ：用于将待加固apk合并到解壳操作的apk文件中<br><code>unshell_apk</code> ：用于将绑定到自身的密文解密，释放出原始apk文件，并进行动态加载，将其启动起来</p>
+<ul>
+<li>将待加固的apk文件<code>source_apk</code>加密为<code>code_source_apk</code>文件</li>
+<li>使用<code>packing</code>程序将加固过的<code>encode_source_apk</code>文件追加到用于执行unshell操作的apk文件<code>unshell_apk</code>的dex文件后</li>
+<li>编写执行unshell操作的apk文件<code>unshell_apk</code>，该程序主要负责在<code>Application</code>类的<code>attachBaseContext</code>方法中将追加绑定到自身的原始apk文件剥离并解密释放出来，进行动态加载，然后再在<code>Application</code>类的<code>onCreate</code>方法中将找到自身的application，并将动态加载的原始apk的application将其替换掉<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><h3 id="要注意的坑"><a href="#要注意的坑" class="headerlink" title="要注意的坑"></a>要注意的坑</h3></li>
+<li>原始apk中要构造一个<code>Application</code>类，用于在unshell程序中动态加载后进行查找</li>
+<li><code>Application</code>类在定义之后要在AM文件的<code>&lt;application&gt;&lt;/application&gt;</code>标签中声明</li>
+</ul>
 
           
         
@@ -651,6 +1635,10 @@
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -694,7 +1682,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -707,7 +1695,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
