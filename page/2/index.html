@@ -229,6 +229,149 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/19/Ubuntu16-04-LTS-编译Android6-0源码，刷机Nexus-6P/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/19/Ubuntu16-04-LTS-编译Android6-0源码，刷机Nexus-6P/" itemprop="url">Ubuntu16.04 LTS 编译Android6.0源码，刷机Nexus 6P</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-19T21:45:08+08:00">
+                2018-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>参考两篇博客才少走很多很多弯路，十分十分的感谢！<br><a href="https://blog.csdn.net/fuchaosz/article/details/51487585" target="_blank" rel="noopener">[Android 编译(一)] Ubuntu 16.04 LTS 成功编译 Android 6.0 源码教程</a><br><a href="https://blog.csdn.net/fuchaosz/article/details/52473660" target="_blank" rel="noopener">[Android编译(二)] 从谷歌官网下载android 6.0源码、编译并刷入nexus 6p手机</a></p>
+<p>自主编译源码的需求主要有三个方面，两个显式需求：实现脱壳方案、对Framework层的关键API插桩，一个隐式需求：了解Android系统底层结构和各种实现逻辑。</p>
+<h5 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h5><ul>
+<li><strong>Ubuntu主机</strong>：最好不要是虚拟机，配置能有多高有多高（和编译速度有关），存储也是越大越好（100GB+，因为源码很大），我选的是Ubuntu16.04版本的，网上有不少是Ubuntu14版本的教程，我找的是16.04版本的教程，所以就选的这个装的。</li>
+<li><strong>Nexus系列手机</strong>：这个东西主要是为了保证有现成的驱动可以用，我手边有Nexus5、5X、6，公司的测试机比较多，可以去TB上买，我看了下Nexus5也就卖一两百块钱一部，搞个做测试机还是蛮舒服的。</li>
+<li><strong>梯子</strong>：这个东西怎么说，最好还是有吧，我竟可能的避免大文件从墙外下载，但是有些东西还是要访问以下墙外的网站的</li>
+<li><strong>心态</strong>：要稳住，下载代码，编译、刷机啥的还是蛮多坑的，其实我照着大佬的博客走，已经少了很多的坑了，但是依然不是很顺利，所以心态一定要稳住</li>
+</ul>
+<h5 id="Ubuntu安装"><a href="#Ubuntu安装" class="headerlink" title="Ubuntu安装"></a>Ubuntu安装</h5><p>略…</p>
+<h5 id="源码下载"><a href="#源码下载" class="headerlink" title="源码下载"></a>源码下载</h5><p>这个坑了我两天多的时间，按照博客里面博主给的连接下载的百度网盘中的代码lunch之后发现竟然没有我需要的版本，只能去google官网下载，尼玛用官网提供的repo工具同步下载代码，尼玛疯狂404，心态接近爆炸，我就在想不可能大家都是这么下的啊，百度一下你就知道，如果得知中科大和清华都有源，直接日到<a href="https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/" target="_blank" rel="noopener">清华源的AOSP部分</a>，对着教程直接一通操作，下载了将近一天，终于是下载下来了</p>
+<p><a href="https://source.android.com/source/build-numbers#source-code-tags-and-builds" target="_blank" rel="noopener">源代码标记和细分版本（手机设备对应的系统版本的细分版本对照表格）</a></p>
+<h5 id="配置环境和必要组件"><a href="#配置环境和必要组件" class="headerlink" title="配置环境和必要组件"></a>配置环境和必要组件</h5><ul>
+<li>先换源，换成阿里的源，这样安装必要的组件软件的时候下载速度回更快，参考文首的博客第一篇，操作一下</li>
+<li>然后安装各种依赖，参考参考文首的博客第一篇，都是大佬爬坑总结出来的，珍惜之~</li>
+<li>接着安装open JDK7，参考参考文首的博客第一篇，大佬说是从Android6.0开始官方编译源码开始使用open JDK了，可能是Google怕和Oracle扯皮吧，装就完事儿了<h5 id="修改源码文件"><a href="#修改源码文件" class="headerlink" title="修改源码文件"></a>修改源码文件</h5>大佬说把<code>mydroid/art/build/Android.common_build.mk</code>文件中的第75行的<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifneq ($(WITHOUT_HOST_CLANG),<span class="keyword">true</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>改成<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifeq ($(WITHOUT_HOST_CLANG),<span class="keyword">false</span>)</span><br></pre></td></tr></table></figure></p>
+<p>我眼瞎，只瞧见后面的true改成false，没看清前面的<code>ifneq</code>还要改成<code>ifeq</code>，第一次编译的时候报错了，莫名其妙，搞了半天，才发现是这里出问题了</p>
+<h5 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h5><p>同样参考参考文首的博客第一篇<br>在做<code>lunch</code>命令选择编译目标时，需要注意你的编译目标，只在模拟器中运行就直接选第一个就行，我用的是Nexus 6P，所以选的就是<code>aosp_angler-userdebug</code>这一项，具体设备选择具体编译目标</p>
+<h5 id="驱动问题"><a href="#驱动问题" class="headerlink" title="驱动问题"></a>驱动问题</h5><p>由于我的三点动机都不牵扯对驱动层代码的修改问题，所以就比较省事儿了，直接下载对应系统版本和设备的工厂镜像包，解压取出<code>vendor.img</code>文件当做驱动刷进去就可以了，工厂镜像要对应好你下载的源码的细分版本：<a href="https://developers.google.com/android/images" target="_blank" rel="noopener">原生系统工厂镜像</a></p>
+<h5 id="刷机"><a href="#刷机" class="headerlink" title="刷机"></a>刷机</h5><p>照着博客第二篇操作就可以了<br>不过有个问题就是，在Ubuntu下当进入fastboot模式下找不到设备的错误时，报错类似如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt; waiting for any device &gt;</span><br></pre></td></tr></table></figure></p>
+<p>博主给的方案是给fastboot命令加权限，还可以想这篇<a href="https://blog.csdn.net/maosidiaoxian/article/details/22661725" target="_blank" rel="noopener">博文</a>中最后说的那样处理，也十分有效。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>照着教程来基本还是很舒服的，基本遇到啥大坑，就是源码下载和编译太耗时了，针对自己编译vendor.img文件的问题，之后还是要尝试搞一下，目前先把插桩的东西做一下吧。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/13/Android动态加载类/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1373,147 +1516,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/05/Softmax-Regression解决手写数字识别问题/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Aspi1in">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aspi1in's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/05/Softmax-Regression解决手写数字识别问题/" itemprop="url">Softmax Regression解决手写数字识别问题</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-05T21:48:17+08:00">
-                2018-06-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>题目就是在一个手写像素为28 <em> 28的图片上，识别出0 — 9的数字，这是一个分类任务，MNIST数据集为我们提供了55000份训练数据、10000份测试数据、5000份验证数据。<br>这三组数据的型状分别是：<code>[55000, 748, 10]</code>、<code>[10000, 748, 10]</code>、<code>[5000, 748, 10]</code><br>第一个元素代表手写卡的序号，第二个元素是手写卡的灰度像素值（28 </em> 28 = 784），图片本来是个二维数组的，这里把其转换成一个一维向量<br><img src="/2018/06/05/Softmax-Regression解决手写数字识别问题/1527736931248.png" alt="lbxx"><br>第三个是手写卡对应的数字分类，这个分类是一个独热编码的分类，即数字0可以用<code>[1, 0, 0, 0, 0, 0, 0, 0, 0, 0]</code>，来表示，数字2可以用<code>[0, 0, 1, 0, 0, 0, 0, 0, 0, 0]</code>表示，以此类推，结构如下图所示：<br><img src="/2018/06/05/Softmax-Regression解决手写数字识别问题/1527737047277.png" alt="lbxx"><br>这里使用Softmax Regression算法来进行训练，Softmax Regression可以参考上一篇笔记<br>一个单层的神经网络可以形如下图：<br><img src="/2018/06/05/Softmax-Regression解决手写数字识别问题/1527737222489.png" alt="lbxx"><br>xi是特征值、W是各个权重、b是偏置量，运算出来的结果通过Softmax函数进行运算，计算出落在每个分类上的概率，转换成代数运算如下：<br><img src="/2018/06/05/Softmax-Regression解决手写数字识别问题/1527737395655.png" alt="lbxx"><br>矩阵乘法变形一下：<br><img src="/2018/06/05/Softmax-Regression解决手写数字识别问题/1527737449293.png" alt="lbxx"><br>这样就很容易写代码了。<br>下面直接看使用TensorFlow来做的代码实现吧：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">to test tensorflow</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line">__title__ = <span class="string">'mnist'</span></span><br><span class="line">__version__ = <span class="string">'0.0.1'</span></span><br><span class="line">__author__ = <span class="string">'aspi1in[taijingyu@antiy.cn]'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">from</span> tensorflow.examples.tutorials.mnist <span class="keyword">import</span> input_data</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取数据集</span></span><br><span class="line">mnist = input_data.read_data_sets(<span class="string">"MNIST_data/"</span>, one_hot=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化Session</span></span><br><span class="line">sess = tf.InteractiveSession()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义占位符，约定输入的特征的格式</span></span><br><span class="line">x = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">784</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义、初始化权重变量</span></span><br><span class="line">W = tf.Variable(tf.zeros([<span class="number">784</span>, <span class="number">10</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义、初始化偏置量</span></span><br><span class="line">b = tf.Variable(tf.zeros([<span class="number">10</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用softma'x计算输出结果</span></span><br><span class="line">y = tf.nn.softmax(tf.matmul(x, W) + b)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算损失函数，这里使用交叉熵</span></span><br><span class="line">y_ = tf.placeholder(tf.float32, [<span class="keyword">None</span>, <span class="number">10</span>])</span><br><span class="line">cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[<span class="number">1</span>]))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置梯度下降算法进行优化</span></span><br><span class="line">train_step = tf.train.GradientDescentOptimizer(<span class="number">0.5</span>).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化全局参数</span></span><br><span class="line">tf.global_variables_initializer().run()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进行随机梯度下降进行训练</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    batch_xs, batch_ys = mnist.train.next_batch(<span class="number">100</span>)</span><br><span class="line">    train_step.run(&#123;x : batch_xs, y_ : batch_ys&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 比较预测的值和实际值</span></span><br><span class="line">correct_prediction = tf.equal(tf.argmax(y, <span class="number">1</span>), tf.argmax(y_, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将对比结果（布尔型）转换成浮点型</span></span><br><span class="line">accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用测试数据集评估训练的模型</span></span><br><span class="line">print(accuracy.eval(&#123;x : mnist.test.images, y_ : mnist.test.labels&#125;))</span><br></pre></td></tr></table></figure></p>
-<p>代码不多，注释也说的很明白，不过有些tensorflow提供的一些函数简单备忘一下：</p>
-<ul>
-<li><code>tf.InteractiveSession()</code>注册获取一个session，可以理解成一个工作空间，我们接下来的所有工作都是工作在这个里面。</li>
-<li><code>tf.placeholder(tf.float32, [None, 784])</code>构造一个占位符，第一个参数表示占位符的类型，第二个参数表示数据的型状是什么样子的，这里是float32类型，型状是一个二维数组，子一维数组要求是784大小，有多少个子一维数组没有限定，用<code>None</code>表示。</li>
-<li><code>tf.Variable(tf.zeros([784, 10]))</code>构造一个tensor变量，约定型状，初始化，在tensorflow框架中变量的值会保存在上下文，并且可以被修改，<code>W</code>和<code>b</code>都是两个tensor变量。</li>
-<li><code>tf.nn.softmax(tf.matmul(x, W) + b)</code>在tensorflow两个tensor做乘法使用<code>tf.matmul()</code>方法，有点意思的是参数里面<code>x</code>在第一位<code>W</code>在第二位，否则会报错，这是因为矩阵的乘法不像普通的代数乘法无条件满足乘法交换律的，所以tensorflow规定了乘数和被乘数的位置。<code>tf.nn.softmax()</code>是tensorflow提供的softmax求值函数，<code>tf.nn</code>中还有不少其他函数。</li>
-<li><code>tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))</code>求log、求和、求平均值。</li>
-<li><code>tf.train.GradientDescentOptimizer(0.5)</code>tensorflow提供的梯度下降算法，设置步长为0.5。</li>
-<li><code>tf.global_variables_initializer().run()</code>tensorflow提供的对全局变量的初始化函数，在跑之前必做的一个操作。</li>
-<li><code>mnist.train.next_batch(100)</code>对数据集切片，喂给模型进行随机梯度下降优化。</li>
-<li><code>tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))</code>其中<code>tf.argmax()</code>是比较取出最大值，<code>tf.equal()</code>比较两个值是否相等，返回值是布尔型。</li>
-<li><code>tf.cast(correct_prediction, tf.float32)</code>将布尔类型的值转换成float32类型</li>
-<li><code>accuracy.eval({x : mnist.test.images, y_ : mnist.test.labels})</code>tensorflow提供的评估模型的方法。</li>
-</ul>
-<h4 id="通过这个项目可以学习到一下知识："><a href="#通过这个项目可以学习到一下知识：" class="headerlink" title="通过这个项目可以学习到一下知识："></a>通过这个项目可以学习到一下知识：</h4><ul>
-<li>一个单层的神经网络是什么样子的。</li>
-<li>使用TF如何编码实现一个简单的神经网络，这里包括：定义输出、定义权重和偏置量、定义模型（基本是乘法和加法）、定义优化函数、定义损失函数、进行合理的训练、评估这几步。</li>
-<li>一些tf函数的使用。</li>
-<li>什么是激活函数？</li>
-<li>学习到的第一个激活函数：softmax，</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1564,7 +1566,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

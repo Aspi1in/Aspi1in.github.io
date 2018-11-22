@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
+<meta name="description" content="发现这个主要是在分析腾讯QQ的时候，发现很多地方使用了interface，有个很普遍的用法，就是在设计框架的时候，通过interface约定框架，然后通过个动态加载单独的实现类来实现框架的内容，在QQ中很多插件就是这么搞的，下面举例说明。 看如下代码：1234567//main.javapublic final class Main &amp;#123;    public static void mai">
 <meta name="keywords" content="Android开发">
 <meta property="og:type" content="article">
-<meta property="og:title" content="记一次Android 8.0下的重打包工作">
-<meta property="og:url" content="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/index.html">
+<meta property="og:title" content="Interface在热更新中的用处">
+<meta property="og:url" content="http://yoursite.com/2018/11/22/Interface在热更新中的用处/index.html">
 <meta property="og:site_name" content="Aspi1in&#39;s Blog">
-<meta property="og:description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
+<meta property="og:description" content="发现这个主要是在分析腾讯QQ的时候，发现很多地方使用了interface，有个很普遍的用法，就是在设计框架的时候，通过interface约定框架，然后通过个动态加载单独的实现类来实现框架的内容，在QQ中很多插件就是这么搞的，下面举例说明。 看如下代码：1234567//main.javapublic final class Main &amp;#123;    public static void mai">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-11-12T14:14:18.325Z">
+<meta property="og:updated_time" content="2018-11-22T01:50:26.694Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="记一次Android 8.0下的重打包工作">
-<meta name="twitter:description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
+<meta name="twitter:title" content="Interface在热更新中的用处">
+<meta name="twitter:description" content="发现这个主要是在分析腾讯QQ的时候，发现很多地方使用了interface，有个很普遍的用法，就是在设计框架的时候，通过interface约定框架，然后通过个动态加载单独的实现类来实现框架的内容，在QQ中很多插件就是这么搞的，下面举例说明。 看如下代码：1234567//main.javapublic final class Main &amp;#123;    public static void mai">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
+  <link rel="canonical" href="http://yoursite.com/2018/11/22/Interface在热更新中的用处/">
 
 
 
 
 
-  <title>记一次Android 8.0下的重打包工作 | Aspi1in's Blog</title>
+  <title>Interface在热更新中的用处 | Aspi1in's Blog</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/22/Interface在热更新中的用处/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">记一次Android 8.0下的重打包工作</h1>
+          <h1 class="post-title" itemprop="name headline">Interface在热更新中的用处</h1>
         
 
         <div class="post-meta">
@@ -262,8 +262,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-29T22:11:39+08:00">
-                2018-10-29
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-22T09:49:36+08:00">
+                2018-11-22
               </time>
             
 
@@ -300,13 +300,14 @@
       
 
       
-        <p>同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有<code>classes.dex</code>文件，解压之后发现确实没有<code>classes.dex</code>文件，看签名里面的文件清单里面是有<code>classes.dex</code>的摘要的，所以肯定是哪里没搞清楚.</p>
-<p>看撸出来的还有一个<code>oat</code>文件，这个文件夹貌似是高版本做预编译的，进去发现了<code>odex</code>和<code>vdex</code>两个文件，估计货就在<code>vdex</code>文件中，网上查了下<code>vdex</code>的文件结构，还是稍微有点复杂的，好在大佬已经写好了工具<a href="https://github.com/anestisb/vdexExtractor" target="_blank" rel="noopener">vdexExtractor</a></p>
-<p>照着git上的编译，然后进行转换<br><code>vdexExtractor -i /tmp/BasicDreams.vdex -o /tmp</code><br>得到<code>classes.dex</code>文件，拖到JEB里面，对着原始apk的AM文件一看，果然各个类都是在的</p>
-<p>将<code>classes.dex</code>文件插回原来的apk中，然后就是重签名了，用<code>jarsigner</code>进行重签<br><code>jarsigner -verbose -keystore /Users/aspilin/Documents/conf/keystore.jks -signedjar Hw-apk-signed.apk HwWeatherClock-repack.apk aspilin</code><br>安装报错，说是二代签名的问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Failed to install /Users/aspilin/Downloads/Hw-apk-signed.apk: Failure [INSTALL_PARSE_FAILED_NO_CERTIFICATES: Failed to collect certificates from /data/app/vmdl1369179008.tmp/base.apk: META-INF/CERT.SF indicates /data/app/vmdl1369179008.tmp/base.apk is signed using APK Signature Scheme v2, but no such signature was found. Signature stripped?]</span><br></pre></td></tr></table></figure></p>
-<p>网上查了下，发现是在编译的时候开了二代签名的配置，那就必须要是要第二代签名技术进行签名，由于已经编译好的apk我们没有源码，显然是不能修改配置重新编译的，那么只能用二代签名工具进行重签名</p>
-<p>使用<code>apksigner</code>进行签名，具体的<code>apksigner</code>使用细节不再介绍<br><code>apksigner sign --ks debug.keystore MyApp.apk</code></p>
-<p>万万没想到，到最后我们还是把应用安装到别的非华为的设备上了，但是但是但是。。。启动的时候失败了，查看LogCat可以看出是在应用启动的时候做了对设备分辨率的检查，这个检查依赖于一个Framework层的包，这个包是<code>com.huawei.android.os.xxx</code>起头的，显然是EMUI这个ROM特有的，所以。。。最后还是凉了。</p>
+        <p>发现这个主要是在分析腾讯QQ的时候，发现很多地方使用了<code>interface</code>，有个很普遍的用法，就是在设计框架的时候，通过<code>interface</code>约定框架，然后通过个动态加载单独的实现类来实现框架的内容，在QQ中很多插件就是这么搞的，下面举例说明。</p>
+<p>看如下代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//main.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line">        MyAddInterface impl = <span class="keyword">new</span> MyImpl();</span><br><span class="line">        System.out.println(impl.division(<span class="number">5.0</span>, <span class="number">3.0</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//MyInterface.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">division</span><span class="params">(Double a, Double b)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现在这里：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//MyImpl.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyImpl</span> <span class="keyword">implements</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">division</span><span class="params">(Double a, Double b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a / b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>显然这是定义了一个除法，如果我们现在要对被除数做非0检测，因为除法里面除数是不能为0的，我们只需要修改<strong>implement</strong>类就行了，修改如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//MyImpl.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyImpl</span> <span class="keyword">implements</span> <span class="title">MyInterface</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Double <span class="title">division</span><span class="params">(Double a, Double b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (b == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"除数为0"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a / b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看起来没啥，但想在main函数在运行时（即不重启main进程的情况下），做到修改除法的逻辑呢？</p>
+<p><code>main.java</code>和<code>MyInterface.java</code>都是写好在apk中的，此时想修改除法的逻辑，只需修改实现类<code>MyImpl.java</code>就行，这时如果我们在<code>main.java</code>中从文件中动态的加载<code>MyImpl</code>类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//main.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span>  </span>&#123;</span><br><span class="line"></span><br><span class="line">        DexClassLoader cl = <span class="keyword">new</span> DexClassLoader(optimizedDexOutputPath.getAbsolutePath(),</span><br><span class="line">                Environment.getExternalStorageDirectory().toString(), <span class="keyword">null</span>, getClassLoader());</span><br><span class="line">        MyInterface impl = cl.loadClass(<span class="string">"MyImpl"</span>).newInstance();</span><br><span class="line">        System.out.println(impl.division(<span class="number">5.0</span>, <span class="number">3.0</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样就可以实现，热更新的效果（主进程不重启，可以修改部分代码逻辑），这在框架设计上十分有用。</p>
 
       
     </div>
@@ -337,8 +338,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/25/Smali学习（一）/" rel="next" title="Smali学习（一）">
-                <i class="fa fa-chevron-left"></i> Smali学习（一）
+              <a href="/2018/11/16/RunningFlow-一-线程的层级关系/" rel="next" title="RunningFlow(一) 线程的层级关系">
+                <i class="fa fa-chevron-left"></i> RunningFlow(一) 线程的层级关系
               </a>
             
           </div>
@@ -346,10 +347,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/13/Linux-Android-s-UID-PID/" rel="prev" title="Linux/Android 's UID & PID">
-                Linux/Android 's UID & PID <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
