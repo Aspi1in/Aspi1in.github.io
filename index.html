@@ -229,6 +229,138 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/26/Python编写setup-py/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/26/Python编写setup-py/" itemprop="url">Python编写setup.py</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-26T19:38:15+08:00">
+                2019-02-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们在github上经常可以看到，有些Python模块不仅可以通过<code>pip install xxx</code>的方式安装，还可以下载下来源码，然后通过在目录下执行<code>python setup.py install</code>的方式安装模块，我由于经常使用PG数据库，而且最近有个需求就是丢一堆下载链接url过来，要求去下载所有的文件，考虑到复用问题，之前一直是放在工程目录下使用，这样感觉不便于统一维护，而且感觉不专业，所以就查了下编写的方法，记录一下过程。</p>
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">|-- PythonUtil</span><br><span class="line">    |-- pythonutil</span><br><span class="line">        |-- __init__.py</span><br><span class="line">        |-- pgtool.py</span><br><span class="line">        |-- urldownloadtool.py</span><br><span class="line">    |-- setup.py</span><br><span class="line">    |-- README.md</span><br></pre></td></tr></table></figure>
+<h3 id="setup-py"><a href="#setup-py" class="headerlink" title="setup.py"></a>setup.py</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">Created on 2019-02-26</span></span><br><span class="line"><span class="string">@summary: setup script</span></span><br><span class="line"><span class="string">@author: aspi1in[helloaspilin@gmail.com]</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup, find_packages</span><br><span class="line"><span class="keyword">import</span> pythonutil <span class="keyword">as</span> distmeta</span><br><span class="line"></span><br><span class="line">install_requires = [</span><br><span class="line">    <span class="string">"requests"</span>,</span><br><span class="line">    <span class="string">"psycopg2"</span>,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">setup(</span><br><span class="line">    name=<span class="string">'pythonutil'</span>,  <span class="comment"># 模块名</span></span><br><span class="line">    version=distmeta.__version__,   <span class="comment"># 版本号</span></span><br><span class="line">    description=distmeta.__doc__,   <span class="comment"># 描述</span></span><br><span class="line">    author=distmeta.__author__, <span class="comment"># 作者信息</span></span><br><span class="line">    author_email=distmeta.__contact__,  <span class="comment"># email</span></span><br><span class="line">    url=distmeta.__homepage__,  <span class="comment"># 主页</span></span><br><span class="line">    platforms=[<span class="string">"any"</span>],  <span class="comment"># 平台</span></span><br><span class="line">    license=<span class="string">"BSD"</span>,  <span class="comment"># 许可证</span></span><br><span class="line">    packages=find_packages(),   </span><br><span class="line">    zip_safe=<span class="keyword">False</span>,</span><br><span class="line">    keywords=<span class="string">'pythonutil'</span>,</span><br><span class="line">    install_requires=install_requires,  <span class="comment"># 项目需要依赖的第三方包</span></span><br><span class="line">    <span class="comment"># entry_points=&#123;</span></span><br><span class="line">    <span class="comment">#     'console_scripts': console_scripts,</span></span><br><span class="line">    <span class="comment"># &#125;,</span></span><br><span class="line">    classifiers=[</span><br><span class="line">        <span class="string">'Development Status :: 2 - Pre-Alpha'</span>,</span><br><span class="line">        <span class="string">'Intended Audience :: Developers'</span>,</span><br><span class="line">        <span class="string">'License :: OSI Approved :: ISC License (ISCL)'</span>,</span><br><span class="line">        <span class="string">'Natural Language :: English'</span>,</span><br><span class="line">        <span class="string">"Programming Language :: Python :: 2"</span>,</span><br><span class="line">        <span class="string">'Programming Language :: Python :: 2.6'</span>,</span><br><span class="line">        <span class="string">'Programming Language :: Python :: 2.7'</span>,</span><br><span class="line">    ],</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<p>关于这些个字段的详细信息可以参考这篇文章：<a href="https://docs.python.org/2/distutils/setupscript.html" target="_blank" rel="noopener">https://docs.python.org/2/distutils/setupscript.html</a></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /Users/aspilin/pythonProject/PythonUtil/</span><br><span class="line">python setup.py install</span><br></pre></td></tr></table></figure>
+<p>可以看下python的包安装目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">pprint.pprint(sys.path)</span><br><span class="line">[&apos;&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python27.zip&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-darwin&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-old&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python&apos;,</span><br><span class="line"> &apos;/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/PyObjC&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/six-1.10.0-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/docx-0.2.4-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/qark-1.2.19-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/Yapsy-1.11.223-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/ply-3.10-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/taskmanager-0.1.0a19-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/beanstalkc-0.4.0-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/oputil-0.2.0-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/oss2-2.6.1-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/poster-0.8.1-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/aliyun_python_sdk_core-2.13.2-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/aliyun_python_sdk_kms-2.5.0-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/pycryptodome-3.7.3-py2.7-macosx-10.14-intel.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/crcmod-1.7-py2.7-macosx-10.14-intel.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/jmespath-0.9.4-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages/pythonutil-0.1.0a19-py2.7.egg&apos;,</span><br><span class="line"> &apos;/Library/Python/2.7/site-packages&apos;]</span><br></pre></td></tr></table></figure>
+<p>我的主要被安装到<code>/Library/Python/2.7/site-packages</code>这里，进去看下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/Library/Python/2.7/site-packages/pythonutil-0.1.0a19-py2.7.egg</span><br></pre></td></tr></table></figure>
+<p>这样就算安装成功了</p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>现在可以通过在任意地方</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pythonutil.pgtool <span class="keyword">import</span> PgTool</span><br><span class="line"><span class="keyword">from</span> pythonutil.urldownloadtool <span class="keyword">import</span> UrlDownloadTool</span><br></pre></td></tr></table></figure>
+<p>的方式引入到代码中了，很方便。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/23/使用apktool向apk中插入Log/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1439,142 +1571,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/22/Tcpdumper开发笔记/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Aspi1in">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aspi1in's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/22/Tcpdumper开发笔记/" itemprop="url">Tcpdumper开发笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-22T21:29:26+08:00">
-                2018-08-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近组里的同学说Shark（一款在Android上抓包的应用）在他的Nexus 5X的Android6.0系统上不能用，主要就是抓包完了之后，pcap文件保存下来的文件没有内容（文件大小是0byte），刚好前几天我妹子说她的Shark不能用了，报了个错，所以我想看看咋回事儿不能用了，要不再整个可以用的，于是就写个这个东西。</p>
-<h4 id="tcpdump"><a href="#tcpdump" class="headerlink" title="tcpdump"></a>tcpdump</h4><p>tcpdump是Linux系统中一个非常重要的工具，以一个ELF文件的形式存在，不过貌似这个东西开源了，之前在Windows上做过抓包的工具，是用WinPcap驱动提供的接口抓的，WinPcap应该是在网卡驱动上加了个Filter，然后copy一份流量通过接口提供给上层的，tcpdump单单一个ELF文件，我确实不知道他是如何实现数据包捕获的，有空还是要看下代码的。这里我们编写的工具的核心实现就是利用tcpdump来做。</p>
-<h4 id="大致思路"><a href="#大致思路" class="headerlink" title="大致思路"></a>大致思路</h4><p>没有看过Shark的代码，但是猜测就是用的tcpdump，在他的应用目录下果然看见了tcpdump文件，所以我也是这么做的，没去仔细研究为啥他在高版本系统不能用了，说下我怎么做的，很简单：</p>
-<ul>
-<li>释放<code>tcpdump</code>文件到系统中</li>
-<li>给<code>tcpdump</code>文件加权限</li>
-<li>利用<code>Runtime.getRuntime().exec()</code>方法执行命令启动<code>tcpdump</code></li>
-<li>kill掉tcpdump进程，保存生成的pcap包</li>
-</ul>
-<h4 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h4><p>流程思路很简单，但是实际做的过程中遇到蛮多问题的：</p>
-<p><strong>1.文件无法释放到<code>/data/local/tmp/</code>目录下</strong><br>抓包应用肯定是要有root权限的，所以可以随意使用命令的方式操作文件，但是tcpdump文件是在编译的时候被放到工程的asset目录下，我们代码里面必须先释放这个文件到一个本地目录下，最开始我选择了释放到<code>/data/local/tmp/</code>目录下，因为网上很多大佬是这么搞得，但是高版本的APP已经没有权限在<code>/data/local/tmp/</code>目录中<code>Create File</code>了，可以<code>new File</code>但是当执行<code>File.CreateNewFile()</code>方法时就会报错，报错说没有权限，其实读写SD卡的权限已经有了，而且<code>/data/local/tmp/</code>目录也不在SD卡中，据说需要SystemApp的级别才能有这个权限，最后干脆调用<code>this.getFilesDir()</code>方法，直接释放到应用自身的目录的中去。</p>
-<p><strong>2.</strong>关于在<code>Runtime.getRuntime().exec()</code>中执行会阻塞的方法的处理办法<br>这里存在两个问题：1.抓包的命令执行后，如何获取命令行返回的内容？ 2.如何终止抓包？<br>最开始直接在UI线程支持命令，命令被阻塞，UI线程直接卡着不动，显然是要开一个线程的，在新的线程中执行<code>Runtime.getRuntime().exec()</code>命令，但是想获取控制台源源不断返回的数据怎么办呢，看下面一个Demo：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.BufferedReader;</span><br><span class="line"><span class="keyword">import</span> java.io.DataOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStreamReader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Runner</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Process process = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    DataOutputStream os = <span class="keyword">null</span>;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.run();</span><br><span class="line">        System.out.println(<span class="string">"线程启动"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            process = Runtime.getRuntime().exec(<span class="string">"ping www.baidu.com"</span>);</span><br><span class="line">            os = <span class="keyword">new</span> DataOutputStream(process.getOutputStream());</span><br><span class="line"></span><br><span class="line">            BufferedReader successResult = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(</span><br><span class="line">                    process.getInputStream()));</span><br><span class="line"></span><br><span class="line">            String s;</span><br><span class="line">            <span class="keyword">while</span> ((s = successResult.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                System.out.println(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"执行线程结束"</span>);</span><br><span class="line">        <span class="keyword">if</span> (os != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                os.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (process != <span class="keyword">null</span>) &#123;</span><br><span class="line">            process.destroy();</span><br><span class="line">            process = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里创建一个线程，执行<code>ping www.baidu.com</code>的命令，这个命令执行后会一直阻塞，知道控制台接收到<code>control + c</code>，才会退出，这个和<code>tcpdump</code>执行的时候一毛一样（其实不一样，后面说），这里通过<code>BufferedReader</code>可以不断的从控制台的输出流中读取内容，当然程序也就会阻塞到这里，我们定义了一个<code>doStop()</code>方法，主要就是销毁因为执行命令生成的<code>process</code>对象，他被销毁了，执行cmd命令的线程自然也会被终止销毁。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Runner r = <span class="keyword">new</span> Runner();</span><br><span class="line">        r.start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        r.doStop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><code>main</code>函数中测试一下，看执行结果，还是比较舒服的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">线程启动</span><br><span class="line">PING www.a.shifen.com (61.135.169.125) 56(84) bytes of data.</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=1 ttl=52 time=74.1 ms</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=2 ttl=52 time=23.7 ms</span><br><span class="line">64 bytes from 61.135.169.125: icmp_seq=3 ttl=52 time=26.7 ms</span><br><span class="line">执行线程结束</span><br></pre></td></tr></table></figure></p>
-<p>但是但是但是，当我把这片逻辑移植到工程中的时候发现，fuck，执行cmd命令的进程确实被关掉了，但是生成的pcap文件大小是0byte，这就说明执行的<code>tcpdump</code>并没有消停啊，这就和<code>ping www.baidu.com</code>不一样了啊，执行<code>top</code>命令一看，果然<code>tcpdump</code>还在跑着呢，找到<code>pid</code>，手动执行<code>kill [pid]</code>，果然文件就有大小了，那咋整，没办法啊，找到一个命令<code>ps -C [command]</code>可以查看指定command的进程信息，稍微处理下，从返回的信息中提取出<code>PID</code>，然后调用<code>Runtime.getRuntime().exec()</code>执行<code>kill [pid]</code>命令，杀之就可以了。这里很疑惑是为啥，当时先猜是不是<code>tcpdump</code>是不是内部开了新的进程去执行命令，然后还设置了什么不随爸爸挂掉儿子也挂掉的东西（我其实不确定是不是有这种机制的），后来发现如果在抓着包，把app杀掉，跑着的<code>tcpdump</code>就也自动停了，我也是见了鬼了，可能是我忽略了什么细节，估计要看下<code>tcpdump</code>的源码才能搞明白吧。</p>
-<p><strong>3.一个小问题，就是子线程更新UI主线程中的控件的问题</strong><br>还是开发做的少了，这种基本操作都没有搞好，不过还好我遇到这个问题之后就想到了貌似之前就看到过用<code>Handler</code>解决这个问题的情况，在UI线程声明一个<code>Handler</code>类型的成员变量，但是要记得加上<code>final</code>关键字，要不然传递实例到子进程中的时候，尼玛这个东西在用的时候会是<code>null</code>。我猜测在UI线程构造一个<code>final</code>关键字的控件的实例，然后传递到子线程，估计也可以更新，没具体试，但是感觉没有用<code>Handler</code>优雅。</p>
-<p>代码放到内部的git系统中了，明儿让他们用用，看有没有bug。。。。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1625,7 +1621,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1638,7 +1634,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
@@ -1675,7 +1671,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
