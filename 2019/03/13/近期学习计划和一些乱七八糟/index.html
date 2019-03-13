@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Android开发,">
+  <meta name="keywords" content="杂谈,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
-<meta name="keywords" content="Android开发">
+<meta name="description" content="学习计划这两天在看VirtualApp的源码，但是发现看着巨吃力，后来在一篇博文中了解到需要对一些基础知识有较深的理解才比较方便阅读理解其中的实现原理，遂列下来，接下来这段时间搞定这些知识点，想起了之前在阿里的一个学哥说的他们组有个狠人，花大半年时间把整个Android源码读了一遍，后来成大佬了，应该有吹的成分，但是。。。还是很牛逼啊。 主要分一下几个大知识点：  Java的反射机制 Java的动">
+<meta name="keywords" content="杂谈">
 <meta property="og:type" content="article">
-<meta property="og:title" content="记一次Android 8.0下的重打包工作">
-<meta property="og:url" content="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/index.html">
+<meta property="og:title" content="近期学习计划和一些乱七八糟">
+<meta property="og:url" content="http://yoursite.com/2019/03/13/近期学习计划和一些乱七八糟/index.html">
 <meta property="og:site_name" content="Aspi1in&#39;s Blog">
-<meta property="og:description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
+<meta property="og:description" content="学习计划这两天在看VirtualApp的源码，但是发现看着巨吃力，后来在一篇博文中了解到需要对一些基础知识有较深的理解才比较方便阅读理解其中的实现原理，遂列下来，接下来这段时间搞定这些知识点，想起了之前在阿里的一个学哥说的他们组有个狠人，花大半年时间把整个Android源码读了一遍，后来成大佬了，应该有吹的成分，但是。。。还是很牛逼啊。 主要分一下几个大知识点：  Java的反射机制 Java的动">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-11-12T14:14:18.325Z">
+<meta property="og:updated_time" content="2019-03-13T10:01:13.078Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="记一次Android 8.0下的重打包工作">
-<meta name="twitter:description" content="同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有classes.dex文件，解压之后发现确实没有classes.dex文件，看签名里面的文件清单里面是有classes.dex的摘要的，所以肯定是哪里没搞清楚. 看撸出来的还有一个oat文件，这个文件夹貌似是高版本做预编译的，进去发现了odex和vdex两个文件，估计货就在vdex文件中">
+<meta name="twitter:title" content="近期学习计划和一些乱七八糟">
+<meta name="twitter:description" content="学习计划这两天在看VirtualApp的源码，但是发现看着巨吃力，后来在一篇博文中了解到需要对一些基础知识有较深的理解才比较方便阅读理解其中的实现原理，遂列下来，接下来这段时间搞定这些知识点，想起了之前在阿里的一个学哥说的他们组有个狠人，花大半年时间把整个Android源码读了一遍，后来成大佬了，应该有吹的成分，但是。。。还是很牛逼啊。 主要分一下几个大知识点：  Java的反射机制 Java的动">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
+  <link rel="canonical" href="http://yoursite.com/2019/03/13/近期学习计划和一些乱七八糟/">
 
 
 
 
 
-  <title>记一次Android 8.0下的重打包工作 | Aspi1in's Blog</title>
+  <title>近期学习计划和一些乱七八糟 | Aspi1in's Blog</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/近期学习计划和一些乱七八糟/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">记一次Android 8.0下的重打包工作</h1>
+          <h1 class="post-title" itemprop="name headline">近期学习计划和一些乱七八糟</h1>
         
 
         <div class="post-meta">
@@ -262,8 +262,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-29T22:11:39+08:00">
-                2018-10-29
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-13T18:00:25+08:00">
+                2019-03-13
               </time>
             
 
@@ -300,13 +300,18 @@
       
 
       
-        <p>同事想把华为Mate10手机中的天气应用导出来，丢到别的手机里面安装，结果撸出来的apk在安装的时候报错，说没有<code>classes.dex</code>文件，解压之后发现确实没有<code>classes.dex</code>文件，看签名里面的文件清单里面是有<code>classes.dex</code>的摘要的，所以肯定是哪里没搞清楚.</p>
-<p>看撸出来的还有一个<code>oat</code>文件，这个文件夹貌似是高版本做预编译的，进去发现了<code>odex</code>和<code>vdex</code>两个文件，估计货就在<code>vdex</code>文件中，网上查了下<code>vdex</code>的文件结构，还是稍微有点复杂的，好在大佬已经写好了工具<a href="https://github.com/anestisb/vdexExtractor" target="_blank" rel="noopener">vdexExtractor</a></p>
-<p>照着git上的编译，然后进行转换<br><code>vdexExtractor -i /tmp/BasicDreams.vdex -o /tmp</code><br>得到<code>classes.dex</code>文件，拖到JEB里面，对着原始apk的AM文件一看，果然各个类都是在的</p>
-<p>将<code>classes.dex</code>文件插回原来的apk中，然后就是重签名了，用<code>jarsigner</code>进行重签<br><code>jarsigner -verbose -keystore /Users/aspilin/Documents/conf/keystore.jks -signedjar Hw-apk-signed.apk HwWeatherClock-repack.apk aspilin</code><br>安装报错，说是二代签名的问题：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Failed to install /Users/aspilin/Downloads/Hw-apk-signed.apk: Failure [INSTALL_PARSE_FAILED_NO_CERTIFICATES: Failed to collect certificates from /data/app/vmdl1369179008.tmp/base.apk: META-INF/CERT.SF indicates /data/app/vmdl1369179008.tmp/base.apk is signed using APK Signature Scheme v2, but no such signature was found. Signature stripped?]</span><br></pre></td></tr></table></figure></p>
-<p>网上查了下，发现是在编译的时候开了二代签名的配置，那就必须要是要第二代签名技术进行签名，由于已经编译好的apk我们没有源码，显然是不能修改配置重新编译的，那么只能用二代签名工具进行重签名</p>
-<p>使用<code>apksigner</code>进行签名，具体的<code>apksigner</code>使用细节不再介绍<br><code>apksigner sign --ks debug.keystore MyApp.apk</code></p>
-<p>万万没想到，到最后我们还是把应用安装到别的非华为的设备上了，但是但是但是。。。启动的时候失败了，查看LogCat可以看出是在应用启动的时候做了对设备分辨率的检查，这个检查依赖于一个Framework层的包，这个包是<code>com.huawei.android.os.xxx</code>起头的，显然是EMUI这个ROM特有的，所以。。。最后还是凉了。</p>
+        <h3 id="学习计划"><a href="#学习计划" class="headerlink" title="学习计划"></a>学习计划</h3><p>这两天在看VirtualApp的源码，但是发现看着巨吃力，后来在一篇博文中了解到需要对一些基础知识有较深的理解才比较方便阅读理解其中的实现原理，遂列下来，接下来这段时间搞定这些知识点，想起了之前在阿里的一个学哥说的他们组有个狠人，花大半年时间把整个Android源码读了一遍，后来成大佬了，应该有吹的成分，但是。。。还是很牛逼啊。</p>
+<p>主要分一下几个大知识点：</p>
+<ul>
+<li>Java的反射机制</li>
+<li>Java的动态代理机制</li>
+<li>四大组件启动流程</li>
+<li>apk安装流程</li>
+<li>apk启动流程</li>
+</ul>
+<p>主要计划从源码入手，先搞Java的反射和动态代理，我发现不管是Android系统源码也好，还是一些厉害的框架也好，都会大量的使用反射和动态代理，这些知识的薄弱，导致我看起代码来非常吃力，所以先补充这块知识，不然看四大组件也费劲，接着就是四大组件的设计思想、实现原理、启动流程，因为这些组价在Android整个系统中和第三方框架中也被非常大量的使用，不搞清楚这些东西，一样看起来非常费劲，最后就是和实际的业务有关的apk的安装和启动啊，类的加载啊，后续就可以进行壳的一些学习。</p>
+<h3 id="乱七八糟"><a href="#乱七八糟" class="headerlink" title="乱七八糟"></a>乱七八糟</h3><p>移动安全从业（Android）截止到今天，我也算是大概有两年半还多了，我自己对技术人员的职业进程看法是大概分三个级别：入行应该达到<strong>入门</strong>水平，在这个行业干2-3年应该达到<strong>熟练</strong>的水平，5-6年应该在行业里做到<strong>精通</strong>。我自认现在的自己在移动安全领域的技术方面还没达到<strong>熟练</strong>的程度，业务方面也仅仅是勉强入门，虽然这两年很多的时间也不是在搞移动安全，也做了很多JavaWeb和Python的开发工作，但是毕竟是做移动安全这一行的。我自认自己不是一个笨人，相比于很多很“迟钝”（相对的）的人，我对新知识的敏感程度和接收程度很高，但是我更自知自己不是一个聪明之人，因为我感觉我无法非常快速的深入了解某个技术的详细细节，我可能需要花费比较多的时间去琢磨个中细节，或许也只是因为我的专注度不够，这是我一个非常非常大的缺陷，我认为真正聪明的人是有足够的自律性和自控性的，我明知道自己的专注度不够，处理一些不紧急的事儿的时候总是容易走神（处理重要任务时的我，感觉是我的巅峰状态，思维清晰动作敏捷，哈哈），但是自己基本没有做什么事儿去纠正这个问题，老话说得好：学的认真，玩儿个痛快。或许真正聪明的人对自己状态的调整有着非常恐怖的控制力吧，我可能需要练习一下，今天当当上买了本书《刻意练习》，希望能有所得。</p>
+<p>纯粹的病毒分析（反病毒），感觉天花板不高，技术上限有限，感觉很多时候是一些基本逆向知识外加部分经验，然后剩下的就是耐心工作的事儿，而反病毒这个事儿又是一个多部门协作工程化的工作，很难出现一个人超常发挥能最业务终极结果有较大提升的情况出现。总之这个岗位我妄言：不适合一个人连续干三年以上，不然就是浪费自己生命。我希望自己在接下来这四个月（四个月后，我就从业满3年了）能充个电，冲击到自己心目中技术的<strong>熟练</strong>程度，还有就是提升自己做非紧急事情的专注度不够的问题，给自己加油。</p>
 
       
     </div>
@@ -324,7 +329,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Android开发/" rel="tag"># Android开发</a>
+            <a href="/tags/杂谈/" rel="tag"># 杂谈</a>
           
         </div>
       
@@ -337,8 +342,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/10/25/Smali学习（一）/" rel="next" title="Smali学习（一）">
-                <i class="fa fa-chevron-left"></i> Smali学习（一）
+              <a href="/2019/03/11/《流浪地球》观后感（吐槽）/" rel="next" title="《流浪地球》观后感（吐槽）">
+                <i class="fa fa-chevron-left"></i> 《流浪地球》观后感（吐槽）
               </a>
             
           </div>
@@ -346,10 +351,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/13/Linux-Android-s-UID-PID/" rel="prev" title="Linux/Android 's UID & PID">
-                Linux/Android 's UID & PID <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -401,8 +402,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -453,6 +463,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#学习计划"><span class="nav-number">1.</span> <span class="nav-text">学习计划</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#乱七八糟"><span class="nav-number">2.</span> <span class="nav-text">乱七八糟</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

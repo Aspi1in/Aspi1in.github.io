@@ -229,6 +229,138 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/25/Smali学习（一）/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/25/Smali学习（一）/" itemprop="url">Smali学习（一）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-25T22:12:40+08:00">
+                2018-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><p>smali和backsmali是dalvik虚拟机使用的dex文件的汇编器和反汇编器，它宽松的语法基于Jasmin/dedexer语法，并支持dex格式的所有功能。</p>
+<p><strong>寄存器</strong>的数量在函数起始之后通过类似<code>.registers 4</code>的方式约定，还可以通过类似<code>.locals 2</code>的方式确定，两者的区别在于，<code>.registers</code>表示函数使用的所有的寄存器个数，而<code>.locals</code>表示函数使用的非参数占用的寄存器个数，函数使用的寄存器的个数由参数占用的寄存器个数 + 非参数占用的寄存器个数共同构成。</p>
+<p>所以在上面的例子中的<code>add()</code>方法中可以看到<code>.registers 4</code>表示两个<code>Integer</code>类型的参数占用了两个寄存器，再加上函数中使用的<code>v0</code>、<code>v1</code>两个寄存器，一共四个寄存器。</p>
+<p>参数总是存放在寄存器的后面，如<code>add()</code>中的两个<code>Integer</code>类型的参数就分别存放在<code>v3</code>、<code>v4</code>两个寄存器中，但是在本例中并没有发现在函数中出现<code>v3</code>、<code>v4</code>两个寄存器，这是因为不同的命名方案导致的，p命名方案会将参数改写成<code>Px</code>的形式，<code>p0</code>、<code>p1</code>分别表示了<code>v3</code>、<code>v4</code>，这样会一定程度上便于阅读smali代码，更加重要的意义在于，当你想在函数中添加代码，然后需要额外的寄存器支持时，单纯的修改<code>.registers n</code>中的<code>n</code>是不行的，因为用<code>v</code>命名方式函数中所有的在取参数时候都要往后偏移你要增加的寄存器数量，这会很麻烦，显然<code>p</code>命名方式就不会存在这种问题。</p>
+<p>dalvik字节码中，寄存器是32位的，可以存放任意类型的值。64位数据类型可以使用连个寄存器来存放。如<code>long</code>和<code>double</code></p>
+<p>dalvik的字节码有两大类型：primitive types和reference types。Reference types是对象和数组，其他的都是primitive type。<br>原始类型：<br>| Smali类型 | Java类型 |<br>| —— | —— |<br>| V | void-can only be used for return types |<br>| Z | boolean |<br>| B | byte |<br>| S    | short |<br>| C    | char |<br>| I    | int |<br>| J    | long(64bits) |<br>| F    | float |<br>| D    | double(64bits) |</p>
+<p><strong>对象类型</strong>：<br><code>Lpackage/name/ObjectName;L</code>表示它是一个对象类型，<code>package/name/</code>是对象的包，<code>ObjectName</code>是对象的名字，<code>;</code>表示对象名字的结尾。在java中等价于<code>package.name.ObjectName</code>。例如，<code>Ljava/lang/String;</code>等价于<code>java.lang.String</code>。数组的形式<code>[I</code>表示为一维整形数组，例如：<code>int[]</code>。要表示多维数组只需要简单的增加<code>[</code>的数量。<code>[[I=int[][]</code>，<code>[[[I=int[][][]</code>等等。注意：数组的最大维度为<strong>255</strong>，也可以表示对象的数组，例如：<code>[Ljava/lang/String;</code>表示一个字符串数组。</p>
+<p><strong>methods</strong>总是被表示为一个非常冗长的形式包括：包含方法的类型、方法的名称、参数的类型和返回类型。虚拟机需要这些信息才能正确的定位方法，在字节码中执行静态方法。<br>如：<code>Lpackage/name/ObjectName;-&gt;MethodName(III)Z</code><br>在这个例子中：Lpackage/name/ObjectName;为类型，MethodsName是方法的名称。（III）Z是方法的声明。III表示有三个int类型的参数，Z表示返回类型是boolean。</p>
+<p><strong>Fieldsde</strong>的形式：<code>Lpackage/name/ObjectName;-&gt;FieldName:Ljava/lang/String;</code></p>
+<h4 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h4><p>将<code>.class</code>文件转化为<code>.dex</code>文件的方法：<code>dx.jar --dex --output=test.dex test.class</code></p>
+<p>Java代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Integer <span class="title">add</span><span class="params">(Integer a, Integer b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Smali代码（Android 26 SDK Tool）<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">.class</span><span class="keyword"> public</span><span class="keyword"> final</span> Main</span><br><span class="line"><span class="keyword">.super</span> Object</span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> constructor</span> &lt;init&gt;()V</span><br><span class="line"><span class="keyword">          .registers</span> 1</span><br><span class="line">00000000 <span class="built_in"> invoke-direct </span>      Object-&gt;&lt;init&gt;()V, p0</span><br><span class="line">00000006  return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> static</span> add(Integer, Integer)Integer</span><br><span class="line"><span class="keyword">          .registers</span> 4</span><br><span class="line">00000000 <span class="built_in"> invoke-virtual </span>     Integer-&gt;intValue()I, p0</span><br><span class="line">00000006 <span class="built_in"> move-result </span>        v0</span><br><span class="line">00000008 <span class="built_in"> invoke-virtual </span>     Integer-&gt;intValue()I, p1</span><br><span class="line">0000000E <span class="built_in"> move-result </span>        v1</span><br><span class="line">00000010 <span class="built_in"> add-int/2addr </span>      v0, v1</span><br><span class="line">00000012 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v0</span><br><span class="line">00000018 <span class="built_in"> move-result-object </span> v0</span><br><span class="line">0000001A <span class="built_in"> return-object </span>      v0</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> static</span> main([String)V</span><br><span class="line"><span class="keyword">          .registers</span> 4</span><br><span class="line">00000000 <span class="built_in"> sget-object </span>        v0, System-&gt;out:PrintStream</span><br><span class="line">00000004 <span class="built_in"> const/4 </span>            v1, 1</span><br><span class="line">00000006 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v1</span><br><span class="line">0000000C <span class="built_in"> move-result-object </span> v1</span><br><span class="line">0000000E <span class="built_in"> const/4 </span>            v2, 2</span><br><span class="line">00000010 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v2</span><br><span class="line">00000016 <span class="built_in"> move-result-object </span> v2</span><br><span class="line">00000018 <span class="built_in"> invoke-static </span>      Main-&gt;add(Integer, Integer)Integer, v1, v2</span><br><span class="line">0000001E <span class="built_in"> move-result-object </span> v1</span><br><span class="line">00000020 <span class="built_in"> invoke-virtual </span>     PrintStream-&gt;println(Object)V, v0, v1</span><br><span class="line">00000026  return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br></pre></td></tr></table></figure></p>
+<p>对比可以看出在Java源码中使用<code>Integer</code>类型，会在smali中先转成int类型再进行计算，所以说啊，为了效率，该使用<code>int</code>就用<code>int</code>别整那些花里胡哨的。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/22/Xposed的一些事项/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1502,133 +1634,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/卷积神经网络-CNN（3）/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Aspi1in">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aspi1in's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/08/卷积神经网络-CNN（3）/" itemprop="url">卷积神经网络-CNN（3）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-08T22:03:05+08:00">
-                2018-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这次解决的问题变成了更复杂的物体分类问题，数据不再是灰阶图像的手写数字，变成了RGB通道的彩色图片，图像的内容也变成了更加复杂的汽车、猫、狗等种类。为了解决这类更复杂的图像分类问题，还是使用卷积神经网络，但是为了取得更好的分类结果，使用诸如：参数L2正则化和增加LRN层增强特征的trick。<br>下面还是直接上代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">to test tensorflow</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__title__ = <span class="string">'cnn2'</span></span><br><span class="line">__version__ = <span class="string">'0.0.1'</span></span><br><span class="line">__author__ = <span class="string">'aspi1in[taijingyu@antiy.cn]'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> cifar10, cifar10_input</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化权重，但是对参数进行L2正则化，依然是正态分布截断初始化</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">variable_with_weight_loss</span><span class="params">(shape, stddev, wl)</span>:</span></span><br><span class="line">    var = tf.Variable(tf.truncated_normal(shape, stddev=stddev))</span><br><span class="line">    <span class="keyword">if</span> wl <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        weight_loss = tf.multiply(tf.nn.l2_loss(var), wl, name=<span class="string">'weight_loss'</span>)</span><br><span class="line">        tf.add_to_collection(<span class="string">'losses'</span>, weight_loss)</span><br><span class="line">    <span class="keyword">return</span> var</span><br><span class="line"></span><br><span class="line"><span class="comment"># 由于对参数使用了L2正则话处理，所以在原始交叉熵函数的基础上还要加上参数的损失</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(logits, labels)</span>:</span></span><br><span class="line">    labels = tf.cast(labels, tf.int64)</span><br><span class="line">    cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits,</span><br><span class="line">                                                                   labels=labels,</span><br><span class="line">                                                                   name=<span class="string">'cross_entropy_per_example'</span>)</span><br><span class="line">    cross_entropy_mean = tf.reduce_mean(cross_entropy, name=<span class="string">'cross_entropy'</span>)</span><br><span class="line">    tf.add_to_collection(<span class="string">'losses'</span>, cross_entropy_mean)</span><br><span class="line">    <span class="keyword">return</span> tf.add_n(tf.get_collection(<span class="string">'losses'</span>), name=<span class="string">'total_loss'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">max_step = <span class="number">2000</span></span><br><span class="line">batch_size = <span class="number">128</span></span><br><span class="line">data_dir = <span class="string">'/tmp/cifar10_data/cifar-10-batches-bin'</span></span><br><span class="line"></span><br><span class="line">cifar10.maybe_download_and_extract()</span><br><span class="line"></span><br><span class="line">images_train, labels_train = cifar10_input.distorted_inputs(data_dir=data_dir, batch_size=batch_size)   <span class="comment"># 这里对训练数据做了数据增强处理</span></span><br><span class="line">images_test, labels_test = cifar10_input.inputs(eval_data=<span class="keyword">True</span>, data_dir=data_dir, batch_size=batch_size)   <span class="comment"># 测试集的数据不需要处理</span></span><br><span class="line"></span><br><span class="line">imag_holder = tf.placeholder(tf.float32, [batch_size, <span class="number">24</span>, <span class="number">24</span>, <span class="number">3</span>])</span><br><span class="line">label_holder = tf.placeholder(tf.int32, [batch_size])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第一层卷积层</span></span><br><span class="line">weight1 = variable_with_weight_loss(shape=[<span class="number">5</span>, <span class="number">5</span>, <span class="number">3</span>, <span class="number">64</span>], stddev=<span class="number">5e-2</span>, wl=<span class="number">0.0</span>)</span><br><span class="line">kernel1 = tf.nn.conv2d(imag_holder, weight1, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line">bias1 = tf.Variable(tf.constant(<span class="number">0.0</span>, shape=[<span class="number">64</span>]))</span><br><span class="line">conv1 = tf.nn.relu(tf.nn.bias_add(kernel1, bias1))</span><br><span class="line">pool1 = tf.nn.max_pool(conv1, ksize=[<span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>], strides=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line">norm1 = tf.nn.lrn(pool1, <span class="number">4</span>, bias=<span class="number">1.0</span>, alpha=<span class="number">0.001</span> / <span class="number">9.0</span>, beta=<span class="number">0.75</span>) <span class="comment"># 这里使用LRN增强高相关性特征值，减小低相关性特征的值</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二层卷积层</span></span><br><span class="line">weight2 = variable_with_weight_loss(shape=[<span class="number">5</span>, <span class="number">5</span>, <span class="number">64</span>, <span class="number">64</span>], stddev=<span class="number">5e-2</span>, wl=<span class="number">0.0</span>)</span><br><span class="line">kernel2 = tf.nn.conv2d(norm1, weight2, [<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line">bias2 = tf.Variable(tf.constant(<span class="number">0.1</span>, shape=[<span class="number">64</span>]))</span><br><span class="line">conv2 = tf.nn.relu(tf.nn.bias_add(kernel2, bias2))</span><br><span class="line">norm2 = tf.nn.lrn(conv2, <span class="number">4</span>, bias=<span class="number">1.0</span>, alpha=<span class="number">0.001</span> / <span class="number">9.0</span>, beta=<span class="number">0.75</span>)</span><br><span class="line">pool2 = tf.nn.max_pool(norm2, ksize=[<span class="number">1</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>], strides=[<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>], padding=<span class="string">'SAME'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将数据一维化，然后连接到一个全连接层，使用参数L2正则化</span></span><br><span class="line">reshape = tf.reshape(pool2, [batch_size, <span class="number">-1</span>])</span><br><span class="line">dim = reshape.get_shape()[<span class="number">1</span>].value</span><br><span class="line">weight3 = variable_with_weight_loss(shape=[dim, <span class="number">384</span>], stddev=<span class="number">0.04</span>, wl=<span class="number">0.004</span>)</span><br><span class="line">bias3 = tf.Variable(tf.constant(<span class="number">0.1</span>, shape=[<span class="number">384</span>]))</span><br><span class="line">local3 = tf.nn.relu(tf.matmul(reshape, weight3) + bias3)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 继续连接到一个全连接层，将特征维度降低一倍，使用参数L2正则化</span></span><br><span class="line">weight4 = variable_with_weight_loss(shape=[<span class="number">384</span>, <span class="number">192</span>], stddev=<span class="number">0.04</span>, wl=<span class="number">0.004</span>)</span><br><span class="line">bias4 = tf.Variable(tf.constant(<span class="number">0.1</span>, shape=[<span class="number">192</span>]))</span><br><span class="line">local4 = tf.nn.relu(tf.matmul(local3, weight4) + bias4)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 依然连接到一个全连接层，但是不再进行softmax处理输出最终预测结果了</span></span><br><span class="line">weight5 = variable_with_weight_loss(shape=[<span class="number">192</span>, <span class="number">10</span>], stddev=<span class="number">1</span> / <span class="number">192.0</span>, wl=<span class="number">0.0</span>)</span><br><span class="line">bias5 = tf.Variable(tf.constant(<span class="number">0.0</span>, shape=[<span class="number">10</span>]))</span><br><span class="line">logits = tf.add(tf.matmul(local4, weight5), bias5)</span><br><span class="line"></span><br><span class="line">loss = loss(logits, label_holder)</span><br><span class="line"></span><br><span class="line">train_op = tf.train.AdamOptimizer(<span class="number">1e-3</span>).minimize(loss)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用in_top_k函数输出结果中分数最高的那一类的准确率</span></span><br><span class="line">top_k_op = tf.nn.in_top_k(logits, label_holder, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">sess = tf.InteractiveSession()</span><br><span class="line">tf.global_variables_initializer().run()</span><br><span class="line"></span><br><span class="line">tf.train.start_queue_runners()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练</span></span><br><span class="line"><span class="keyword">for</span> step <span class="keyword">in</span> range(max_step):</span><br><span class="line">    start_time = time.time()</span><br><span class="line">    image_batch, label_batch = sess.run([images_train, labels_train])</span><br><span class="line">    _, loss_value = sess.run([train_op, loss], feed_dict=&#123;imag_holder : image_batch, label_holder : label_batch&#125;)</span><br><span class="line">    duratiom = time.time() - start_time</span><br><span class="line">    <span class="keyword">if</span> step % <span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">        examples_per_sec = batch_size / duratiom</span><br><span class="line">        sec_per_batch = float(duratiom)</span><br><span class="line"></span><br><span class="line">        format_str = (<span class="string">'step %d, loss=%.2f (%.1f examples/sec; %.3f sec/batch)'</span>)</span><br><span class="line">        print(format_str % (step, loss_value, examples_per_sec, sec_per_batch))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 评估</span></span><br><span class="line">num_examples = <span class="number">10000</span></span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line">num_iter = int(math.ceil(num_examples / batch_size))</span><br><span class="line">true_count = <span class="number">0</span></span><br><span class="line">total_sample_count = num_iter * batch_size</span><br><span class="line">step = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> step &lt; num_iter:</span><br><span class="line">    image_batch, label_batch = sess.run([images_test, labels_test])</span><br><span class="line">    prediction = sess.run([top_k_op], feed_dict=&#123;imag_holder : image_batch, label_holder : label_batch&#125;)</span><br><span class="line">    true_count += np.sum(prediction)</span><br><span class="line">    step += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">precision = true_count / total_sample_count</span><br><span class="line">print(<span class="string">'precision @ 1 = %.3f'</span> % precision)</span><br></pre></td></tr></table></figure></p>
-<p>通过这个项目学习到的有：</p>
-<ul>
-<li>对参数进行正则化的意义</li>
-<li>如何使用TF的l2模块对参数进行正则化 </li>
-<li>使用LRN层的意义</li>
-<li>如何使用TF的lrn模块对特征进行强化处理 </li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1679,7 +1684,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

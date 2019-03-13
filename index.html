@@ -229,6 +229,137 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/13/近期学习计划和一些乱七八糟/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/13/近期学习计划和一些乱七八糟/" itemprop="url">近期学习计划和一些乱七八糟</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-13T18:00:25+08:00">
+                2019-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="学习计划"><a href="#学习计划" class="headerlink" title="学习计划"></a>学习计划</h3><p>这两天在看VirtualApp的源码，但是发现看着巨吃力，后来在一篇博文中了解到需要对一些基础知识有较深的理解才比较方便阅读理解其中的实现原理，遂列下来，接下来这段时间搞定这些知识点，想起了之前在阿里的一个学哥说的他们组有个狠人，花大半年时间把整个Android源码读了一遍，后来成大佬了，应该有吹的成分，但是。。。还是很牛逼啊。</p>
+<p>主要分一下几个大知识点：</p>
+<ul>
+<li>Java的反射机制</li>
+<li>Java的动态代理机制</li>
+<li>四大组件启动流程</li>
+<li>apk安装流程</li>
+<li>apk启动流程</li>
+</ul>
+<p>主要计划从源码入手，先搞Java的反射和动态代理，我发现不管是Android系统源码也好，还是一些厉害的框架也好，都会大量的使用反射和动态代理，这些知识的薄弱，导致我看起代码来非常吃力，所以先补充这块知识，不然看四大组件也费劲，接着就是四大组件的设计思想、实现原理、启动流程，因为这些组价在Android整个系统中和第三方框架中也被非常大量的使用，不搞清楚这些东西，一样看起来非常费劲，最后就是和实际的业务有关的apk的安装和启动啊，类的加载啊，后续就可以进行壳的一些学习。</p>
+<h3 id="乱七八糟"><a href="#乱七八糟" class="headerlink" title="乱七八糟"></a>乱七八糟</h3><p>移动安全从业（Android）截止到今天，我也算是大概有两年半还多了，我自己对技术人员的职业进程看法是大概分三个级别：入行应该达到<strong>入门</strong>水平，在这个行业干2-3年应该达到<strong>熟练</strong>的水平，5-6年应该在行业里做到<strong>精通</strong>。我自认现在的自己在移动安全领域的技术方面还没达到<strong>熟练</strong>的程度，业务方面也仅仅是勉强入门，虽然这两年很多的时间也不是在搞移动安全，也做了很多JavaWeb和Python的开发工作，但是毕竟是做移动安全这一行的。我自认自己不是一个笨人，相比于很多很“迟钝”（相对的）的人，我对新知识的敏感程度和接收程度很高，但是我更自知自己不是一个聪明之人，因为我感觉我无法非常快速的深入了解某个技术的详细细节，我可能需要花费比较多的时间去琢磨个中细节，或许也只是因为我的专注度不够，这是我一个非常非常大的缺陷，我认为真正聪明的人是有足够的自律性和自控性的，我明知道自己的专注度不够，处理一些不紧急的事儿的时候总是容易走神（处理重要任务时的我，感觉是我的巅峰状态，思维清晰动作敏捷，哈哈），但是自己基本没有做什么事儿去纠正这个问题，老话说得好：学的认真，玩儿个痛快。或许真正聪明的人对自己状态的调整有着非常恐怖的控制力吧，我可能需要练习一下，今天当当上买了本书《刻意练习》，希望能有所得。</p>
+<p>纯粹的病毒分析（反病毒），感觉天花板不高，技术上限有限，感觉很多时候是一些基本逆向知识外加部分经验，然后剩下的就是耐心工作的事儿，而反病毒这个事儿又是一个多部门协作工程化的工作，很难出现一个人超常发挥能最业务终极结果有较大提升的情况出现。总之这个岗位我妄言：不适合一个人连续干三年以上，不然就是浪费自己生命。我希望自己在接下来这四个月（四个月后，我就从业满3年了）能充个电，冲击到自己心目中技术的<strong>熟练</strong>程度，还有就是提升自己做非紧急事情的专注度不够的问题，给自己加油。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/11/《流浪地球》观后感（吐槽）/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1491,138 +1622,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/25/Smali学习（一）/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Aspi1in">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aspi1in's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/10/25/Smali学习（一）/" itemprop="url">Smali学习（一）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-25T22:12:40+08:00">
-                2018-10-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><p>smali和backsmali是dalvik虚拟机使用的dex文件的汇编器和反汇编器，它宽松的语法基于Jasmin/dedexer语法，并支持dex格式的所有功能。</p>
-<p><strong>寄存器</strong>的数量在函数起始之后通过类似<code>.registers 4</code>的方式约定，还可以通过类似<code>.locals 2</code>的方式确定，两者的区别在于，<code>.registers</code>表示函数使用的所有的寄存器个数，而<code>.locals</code>表示函数使用的非参数占用的寄存器个数，函数使用的寄存器的个数由参数占用的寄存器个数 + 非参数占用的寄存器个数共同构成。</p>
-<p>所以在上面的例子中的<code>add()</code>方法中可以看到<code>.registers 4</code>表示两个<code>Integer</code>类型的参数占用了两个寄存器，再加上函数中使用的<code>v0</code>、<code>v1</code>两个寄存器，一共四个寄存器。</p>
-<p>参数总是存放在寄存器的后面，如<code>add()</code>中的两个<code>Integer</code>类型的参数就分别存放在<code>v3</code>、<code>v4</code>两个寄存器中，但是在本例中并没有发现在函数中出现<code>v3</code>、<code>v4</code>两个寄存器，这是因为不同的命名方案导致的，p命名方案会将参数改写成<code>Px</code>的形式，<code>p0</code>、<code>p1</code>分别表示了<code>v3</code>、<code>v4</code>，这样会一定程度上便于阅读smali代码，更加重要的意义在于，当你想在函数中添加代码，然后需要额外的寄存器支持时，单纯的修改<code>.registers n</code>中的<code>n</code>是不行的，因为用<code>v</code>命名方式函数中所有的在取参数时候都要往后偏移你要增加的寄存器数量，这会很麻烦，显然<code>p</code>命名方式就不会存在这种问题。</p>
-<p>dalvik字节码中，寄存器是32位的，可以存放任意类型的值。64位数据类型可以使用连个寄存器来存放。如<code>long</code>和<code>double</code></p>
-<p>dalvik的字节码有两大类型：primitive types和reference types。Reference types是对象和数组，其他的都是primitive type。<br>原始类型：<br>| Smali类型 | Java类型 |<br>| —— | —— |<br>| V | void-can only be used for return types |<br>| Z | boolean |<br>| B | byte |<br>| S    | short |<br>| C    | char |<br>| I    | int |<br>| J    | long(64bits) |<br>| F    | float |<br>| D    | double(64bits) |</p>
-<p><strong>对象类型</strong>：<br><code>Lpackage/name/ObjectName;L</code>表示它是一个对象类型，<code>package/name/</code>是对象的包，<code>ObjectName</code>是对象的名字，<code>;</code>表示对象名字的结尾。在java中等价于<code>package.name.ObjectName</code>。例如，<code>Ljava/lang/String;</code>等价于<code>java.lang.String</code>。数组的形式<code>[I</code>表示为一维整形数组，例如：<code>int[]</code>。要表示多维数组只需要简单的增加<code>[</code>的数量。<code>[[I=int[][]</code>，<code>[[[I=int[][][]</code>等等。注意：数组的最大维度为<strong>255</strong>，也可以表示对象的数组，例如：<code>[Ljava/lang/String;</code>表示一个字符串数组。</p>
-<p><strong>methods</strong>总是被表示为一个非常冗长的形式包括：包含方法的类型、方法的名称、参数的类型和返回类型。虚拟机需要这些信息才能正确的定位方法，在字节码中执行静态方法。<br>如：<code>Lpackage/name/ObjectName;-&gt;MethodName(III)Z</code><br>在这个例子中：Lpackage/name/ObjectName;为类型，MethodsName是方法的名称。（III）Z是方法的声明。III表示有三个int类型的参数，Z表示返回类型是boolean。</p>
-<p><strong>Fieldsde</strong>的形式：<code>Lpackage/name/ObjectName;-&gt;FieldName:Ljava/lang/String;</code></p>
-<h4 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h4><p>将<code>.class</code>文件转化为<code>.dex</code>文件的方法：<code>dx.jar --dex --output=test.dex test.class</code></p>
-<p>Java代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(add(<span class="number">1</span>, <span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Integer <span class="title">add</span><span class="params">(Integer a, Integer b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Smali代码（Android 26 SDK Tool）<br><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">.class</span><span class="keyword"> public</span><span class="keyword"> final</span> Main</span><br><span class="line"><span class="keyword">.super</span> Object</span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> constructor</span> &lt;init&gt;()V</span><br><span class="line"><span class="keyword">          .registers</span> 1</span><br><span class="line">00000000 <span class="built_in"> invoke-direct </span>      Object-&gt;&lt;init&gt;()V, p0</span><br><span class="line">00000006  return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> static</span> add(Integer, Integer)Integer</span><br><span class="line"><span class="keyword">          .registers</span> 4</span><br><span class="line">00000000 <span class="built_in"> invoke-virtual </span>     Integer-&gt;intValue()I, p0</span><br><span class="line">00000006 <span class="built_in"> move-result </span>        v0</span><br><span class="line">00000008 <span class="built_in"> invoke-virtual </span>     Integer-&gt;intValue()I, p1</span><br><span class="line">0000000E <span class="built_in"> move-result </span>        v1</span><br><span class="line">00000010 <span class="built_in"> add-int/2addr </span>      v0, v1</span><br><span class="line">00000012 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v0</span><br><span class="line">00000018 <span class="built_in"> move-result-object </span> v0</span><br><span class="line">0000001A <span class="built_in"> return-object </span>      v0</span><br><span class="line"><span class="keyword">.end method</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">.method</span><span class="keyword"> public</span><span class="keyword"> static</span> main([String)V</span><br><span class="line"><span class="keyword">          .registers</span> 4</span><br><span class="line">00000000 <span class="built_in"> sget-object </span>        v0, System-&gt;out:PrintStream</span><br><span class="line">00000004 <span class="built_in"> const/4 </span>            v1, 1</span><br><span class="line">00000006 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v1</span><br><span class="line">0000000C <span class="built_in"> move-result-object </span> v1</span><br><span class="line">0000000E <span class="built_in"> const/4 </span>            v2, 2</span><br><span class="line">00000010 <span class="built_in"> invoke-static </span>      Integer-&gt;valueOf(I)Integer, v2</span><br><span class="line">00000016 <span class="built_in"> move-result-object </span> v2</span><br><span class="line">00000018 <span class="built_in"> invoke-static </span>      Main-&gt;add(Integer, Integer)Integer, v1, v2</span><br><span class="line">0000001E <span class="built_in"> move-result-object </span> v1</span><br><span class="line">00000020 <span class="built_in"> invoke-virtual </span>     PrintStream-&gt;println(Object)V, v0, v1</span><br><span class="line">00000026  return-void</span><br><span class="line"><span class="keyword">.end method</span></span><br></pre></td></tr></table></figure></p>
-<p>对比可以看出在Java源码中使用<code>Integer</code>类型，会在smali中先转成int类型再进行计算，所以说啊，为了效率，该使用<code>int</code>就用<code>int</code>别整那些花里胡哨的。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1673,7 +1672,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
