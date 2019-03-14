@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概述Java代码在计算机中经历的三个阶段：  源代码阶段：Person.java –javac编译–&amp;gt; Person.class 类加载阶段：Person.class –ClassLoader–&amp;gt; Class类型的对象来存储描述Person对象的信息 运行时阶段：Person对象：new Person();  一个类文件一般会有三个域：Field、Constructor和Method，">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java反射reflection">
+<meta property="og:url" content="http://yoursite.com/2019/03/14/Java反射reflection/index.html">
+<meta property="og:site_name" content="Aspi1in&#39;s Blog">
+<meta property="og:description" content="概述Java代码在计算机中经历的三个阶段：  源代码阶段：Person.java –javac编译–&amp;gt; Person.class 类加载阶段：Person.class –ClassLoader–&amp;gt; Class类型的对象来存储描述Person对象的信息 运行时阶段：Person对象：new Person();  一个类文件一般会有三个域：Field、Constructor和Method，">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2019-03-14T15:38:46.806Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java反射reflection">
+<meta name="twitter:description" content="概述Java代码在计算机中经历的三个阶段：  源代码阶段：Person.java –javac编译–&amp;gt; Person.class 类加载阶段：Person.class –ClassLoader–&amp;gt; Class类型的对象来存储描述Person对象的信息 运行时阶段：Person对象：new Person();  一个类文件一般会有三个域：Field、Constructor和Method，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/14/Java反射reflection/">
+
+
+
+
+
+  <title>Java反射reflection | Aspi1in's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Aspi1in's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/14/Java反射reflection/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java反射reflection</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-14T22:01:34+08:00">
+                2019-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>Java代码在计算机中经历的三个阶段：</p>
+<ul>
+<li>源代码阶段：<code>Person.java</code> <strong>–javac编译–&gt;</strong> <code>Person.class</code></li>
+<li>类加载阶段：<code>Person.class</code> <strong>–ClassLoader–&gt;</strong> Class类型的对象来存储描述<code>Person</code>对象的信息</li>
+<li>运行时阶段：Person对象：<code>new Person();</code></li>
+</ul>
+<p>一个类文件一般会有三个域：<code>Field</code>、<code>Constructor</code>和<code>Method</code>，Class类主要就是负责描述这些信息的。</p>
+<p>一个通用文件<code>Person.java</code>，下面将会通过对这个类的反射举例说明，内容如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String a;</span><br><span class="line">    <span class="keyword">protected</span> String b;</span><br><span class="line">    String c;</span><br><span class="line">    <span class="keyword">private</span> String d;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Person&#123;"</span> +</span><br><span class="line">                <span class="string">"name='"</span> + name + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", age="</span> + age +</span><br><span class="line">                <span class="string">", a='"</span> + a + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", b='"</span> + b + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", c='"</span> + c + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", d='"</span> + d + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"I am eatting."</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">(String food)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"I am eatting "</span> + food);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Field的反射"><a href="#Field的反射" class="headerlink" title="Field的反射"></a>Field的反射</h3><p>这个单词翻译过来就是<strong>域</strong>的意思，这里一般是指类中的成员变量，在<code>Person</code>类中是指这一堆东西：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> String name;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> String a;</span><br><span class="line"><span class="keyword">protected</span> String b;</span><br><span class="line">String c;</span><br><span class="line"><span class="keyword">private</span> String d;</span><br></pre></td></tr></table></figure>
+<p><strong>Field</strong>对象的获取：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person.class;</span><br><span class="line">// 获取所有成员变量（只能获取到public修饰的成员变量）</span><br><span class="line">Field[] fields = personClass.getFields();</span><br><span class="line">for (int i=0; i &lt; fields.length; i++) &#123;</span><br><span class="line">    System.out.println(fields[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public java.lang.String Person.a</span><br></pre></td></tr></table></figure>
+<p>这里指获取到一个成员变量<code>a</code>，类型是<code>java.lang.String</code>，全名是<code>Person.a</code>，注意<code>Class.getFields()</code>方法只能获取到<code>public</code>修饰的成员变量，看下<code>Class.getFields()</code>方法的源码可知：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CallerSensitive</span></span><br><span class="line"><span class="keyword">public</span> Field[] getFields() <span class="keyword">throws</span> SecurityException &#123;</span><br><span class="line">    checkMemberAccess(Member.PUBLIC, Reflection.getCallerClass(), <span class="keyword">true</span>);</span><br><span class="line">    <span class="keyword">return</span> copyFields(privateGetPublicFields(<span class="keyword">null</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体的获取是在<code>copyFields()</code>方法中获得：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Field[] privateGetPublicFields(Set&lt;Class&lt;?&gt;&gt; traversedInterfaces) &#123;</span><br><span class="line">    checkInitted();</span><br><span class="line">    Field[] res;</span><br><span class="line">    ReflectionData&lt;T&gt; rd = reflectionData();</span><br><span class="line">    <span class="keyword">if</span> (rd != <span class="keyword">null</span>) &#123;</span><br><span class="line">        res = rd.publicFields;</span><br><span class="line">        <span class="keyword">if</span> (res != <span class="keyword">null</span>) <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一般情况下是直接返回了<code>Class</code>类的一个子类<code>ReflectionData</code>这个类中的<code>publicFields</code>成员变量的值，看下这个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectionData</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">volatile</span> Field[] declaredFields;</span><br><span class="line">    <span class="keyword">volatile</span> Field[] publicFields;</span><br><span class="line">    <span class="keyword">volatile</span> Method[] declaredMethods;</span><br><span class="line">    <span class="keyword">volatile</span> Method[] publicMethods;</span><br><span class="line">    <span class="keyword">volatile</span> Constructor&lt;T&gt;[] declaredConstructors;</span><br><span class="line">    <span class="keyword">volatile</span> Constructor&lt;T&gt;[] publicConstructors;</span><br><span class="line">    <span class="comment">// Intermediate results for getFields and getMethods</span></span><br><span class="line">    <span class="keyword">volatile</span> Field[] declaredPublicFields;</span><br><span class="line">    <span class="keyword">volatile</span> Method[] declaredPublicMethods;</span><br><span class="line">    <span class="keyword">volatile</span> Class&lt;?&gt;[] interfaces;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Value of classRedefinedCount when we created this ReflectionData instance</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> redefinedCount;</span><br><span class="line"></span><br><span class="line">    ReflectionData(<span class="keyword">int</span> redefinedCount) &#123;</span><br><span class="line">        <span class="keyword">this</span>.redefinedCount = redefinedCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>变量名已经说得很清楚各个变量的意思了，这里不再介绍。注意看返回的<code>publicFields</code>值的地方：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Field[] res;</span><br><span class="line">ReflectionData&lt;T&gt; rd = reflectionData();</span><br><span class="line">res = rd.publicFields;</span><br></pre></td></tr></table></figure>
+<p>进去看<code>reflectionData()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> ReflectionData&lt;T&gt; <span class="title">reflectionData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SoftReference&lt;ReflectionData&lt;T&gt;&gt; reflectionData = <span class="keyword">this</span>.reflectionData;</span><br><span class="line">    <span class="keyword">int</span> classRedefinedCount = <span class="keyword">this</span>.classRedefinedCount;</span><br><span class="line">    ReflectionData&lt;T&gt; rd;</span><br><span class="line">    <span class="keyword">if</span> (useCaches &amp;&amp;</span><br><span class="line">        reflectionData != <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">        (rd = reflectionData.get()) != <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">        rd.redefinedCount == classRedefinedCount) &#123;</span><br><span class="line">        <span class="keyword">return</span> rd;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// else no SoftReference or cleared SoftReference or stale ReflectionData</span></span><br><span class="line">    <span class="comment">// -&gt; create and replace new instance</span></span><br><span class="line">    <span class="keyword">return</span> newReflectionData(reflectionData, classRedefinedCount);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>SoftReference</code>是<code>Reference</code>类的子类，主要实现了一些自身附着一些引用，且提供一些供VM进行垃圾回收的作用，这里从当前Class对象中获取成员变量<code>reflectionData</code>的内容给一个‘软引用’，这个软引用将会被最终返回给<code>getFields()</code>方法，这里维护了一个<code>redefinedCount</code>变量用来计数被引用的次数，应该是用来进行垃圾回收的，这里就不管了。</p>
+<p>这里如果想获取全部的Fields可以使用这个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Field[] declaredFields = personClass.getDeclaredFields();</span><br><span class="line"><span class="keyword">for</span> (Field field : declaredFields) &#123;</span><br><span class="line">    System.out.println(field);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">private java.lang.String Person.name</span><br><span class="line">private int Person.age</span><br><span class="line">public java.lang.String Person.a</span><br><span class="line">protected java.lang.String Person.b</span><br><span class="line">java.lang.String Person.c</span><br><span class="line">private java.lang.String Person.d</span><br></pre></td></tr></table></figure>
+<p>通过变量名获取对应的<code>Field</code>对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Field a = personClass.getField(<span class="string">"a"</span>);</span><br><span class="line">Person p = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="comment">// Field对象的get方法</span></span><br><span class="line">Object value = a.get(p);</span><br><span class="line">System.out.println(value);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">null</span><br></pre></td></tr></table></figure>
+<p>可以通过<code>Field.set()</code>方法修改已经实例化的对象对应域的值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Field a = personClass.getField(<span class="string">"a"</span>);</span><br><span class="line">Person p = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="comment">// Field对象的set方法</span></span><br><span class="line">a.set(p, <span class="string">"Aspilin"</span>);</span><br><span class="line">System.out.println(p);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person&#123;name=&apos;null&apos;, age=0, a=&apos;Aspilin&apos;, b=&apos;null&apos;, c=&apos;null&apos;, d=&apos;null&apos;&#125;</span><br></pre></td></tr></table></figure>
+<p>当使用<code>Field.set()</code>方法修改非<strong>public</strong>修饰的域时，会抛出非法权限的异常<code>java.lang.IllegalAccessException</code>，此时可以使用<code>Field.setAccessible(true);</code>方法修改访问权限：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Field d = personClass.getDeclaredField(<span class="string">"d"</span>);</span><br><span class="line"><span class="comment">// 忽略访问安全权限修饰符的安全检查</span></span><br><span class="line">d.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">Object value2 = d.get(p);</span><br><span class="line">System.out.println(value2);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">null</span><br></pre></td></tr></table></figure>
+<h3 id="Constructor的反射"><a href="#Constructor的反射" class="headerlink" title="Constructor的反射"></a>Constructor的反射</h3><p>这个里主要存放构造函数相关的内容，<code>Person</code>中有两个构造函数，一个无参一个有参，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Person</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">    <span class="keyword">this</span>.age = age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Constructor</strong>对象的获取：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person.class;</span><br><span class="line"></span><br><span class="line">Constructor constructor = personClass.getConstructor(String.class, <span class="keyword">int</span>.class);</span><br><span class="line">System.out.println(constructor);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public Person(java.lang.String,int)</span><br></pre></td></tr></table></figure>
+<p>这里获取到的是有参的构造函数，同理获取无参构造函数对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Constructor constructor1  = personClass.getConstructor();</span><br><span class="line">System.out.println(constructor1);</span><br></pre></td></tr></table></figure>
+<p>输出如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public Person()</span><br></pre></td></tr></table></figure>
+<p>分别使用有参、无参构造函数实例化对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建对象</span></span><br><span class="line">Object person = constructor.newInstance(<span class="string">"Aspilin"</span>, <span class="number">25</span>);</span><br><span class="line">System.out.println(person);</span><br><span class="line"><span class="comment">// 创建对象</span></span><br><span class="line">Object person1 = constructor1.newInstance();</span><br><span class="line">System.out.println(person1);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Person&#123;name=&apos;Aspilin&apos;, age=25, a=&apos;null&apos;, b=&apos;null&apos;, c=&apos;null&apos;, d=&apos;null&apos;&#125;</span><br><span class="line">Person&#123;name=&apos;null&apos;, age=0, a=&apos;null&apos;, b=&apos;null&apos;, c=&apos;null&apos;, d=&apos;null&apos;&#125;</span><br></pre></td></tr></table></figure>
+<p>对于无参构造函数也可以直接使用<code>Class.newInstance();</code>方法进行对象实例化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Object o = personClass.newInstance();</span><br><span class="line">System.out.println(o);</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person&#123;name=&apos;null&apos;, age=0, a=&apos;null&apos;, b=&apos;null&apos;, c=&apos;null&apos;, d=&apos;null&apos;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Method的反射"><a href="#Method的反射" class="headerlink" title="Method的反射"></a>Method的反射</h3><p>这里主要是指类当中的成员方法，本例当中的<code>Person</code>类包含两个自定义的成员方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"I am eatting."</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">eat</span><span class="params">(String food)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"I am eatting "</span> + food);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Method对象的获取："><a href="#Method对象的获取：" class="headerlink" title="Method对象的获取："></a>Method对象的获取：</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Class personClass = Person.class;</span><br><span class="line"></span><br><span class="line">Method eat_method = personClass.getMethod(<span class="string">"eat"</span>);</span><br></pre></td></tr></table></figure>
+<p>这里获取到了无参的<code>eat()</code>方法，有参方法的获取：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Method eat_method2 = personClass.getMethod(<span class="string">"eat"</span>, String.class);</span><br></pre></td></tr></table></figure>
+<p>这里需要在<code>getMethod()</code>方法中除了要给予函数名还要有参数类型。</p>
+<h5 id="方法的调用"><a href="#方法的调用" class="headerlink" title="方法的调用"></a>方法的调用</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Person p = <span class="keyword">new</span> Person();</span><br><span class="line">eat_method.invoke(p);</span><br><span class="line">eat_method2.invoke(p, <span class="string">"apple"</span>);</span><br></pre></td></tr></table></figure>
+<p>这里是分别对无参函数和有参函数的调用，输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">I am eatting.</span><br><span class="line">I am eatting apple</span><br></pre></td></tr></table></figure>
+<p>输出全部类当中的方法信息:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Method[] methods = personClass.getMethods();</span><br><span class="line"><span class="keyword">for</span> (Method method : methods) &#123;</span><br><span class="line">    System.out.println(method);</span><br><span class="line">    <span class="comment">// method.setAccessible(true);</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public java.lang.String Person.toString()</span><br><span class="line">public java.lang.String Person.getName()</span><br><span class="line">public void Person.setName(java.lang.String)</span><br><span class="line">public void Person.setAge(int)</span><br><span class="line">public int Person.getAge()</span><br><span class="line">public void Person.eat()</span><br><span class="line">public void Person.eat(java.lang.String)</span><br><span class="line">public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException</span><br><span class="line">public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException</span><br><span class="line">public final void java.lang.Object.wait() throws java.lang.InterruptedException</span><br><span class="line">public boolean java.lang.Object.equals(java.lang.Object)</span><br><span class="line">public native int java.lang.Object.hashCode()</span><br><span class="line">public final native java.lang.Class java.lang.Object.getClass()</span><br><span class="line">public final native void java.lang.Object.notify()</span><br><span class="line">public final native void java.lang.Object.notifyAll()</span><br></pre></td></tr></table></figure>
+<p>可以看到这里将所有的方法都输出出来了，包括了Object类的所有的方法，同样可以调用<code>Method.setAccessible(true);</code>方法来修改获得非<code>public</code>修饰的方法的访问权限。</p>
+<h3 id="类名的获取"><a href="#类名的获取" class="headerlink" title="类名的获取"></a>类名的获取</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String name = personClass.getName();</span><br><span class="line">System.out.println(name);</span><br></pre></td></tr></table></figure>
+<p>输出如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Person</span><br></pre></td></tr></table></figure>
+<p>这里会输出全类名，包括包名（我这里没有打包，所有只输出了类名）。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/13/近期学习计划和一些乱七八糟/" rel="next" title="近期学习计划和一些乱七八糟">
+                <i class="fa fa-chevron-left"></i> 近期学习计划和一些乱七八糟
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Aspi1in</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Field的反射"><span class="nav-number">2.</span> <span class="nav-text">Field的反射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Constructor的反射"><span class="nav-number">3.</span> <span class="nav-text">Constructor的反射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Method的反射"><span class="nav-number">4.</span> <span class="nav-text">Method的反射</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Method对象的获取："><span class="nav-number">4.0.1.</span> <span class="nav-text">Method对象的获取：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#方法的调用"><span class="nav-number">4.0.2.</span> <span class="nav-text">方法的调用</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#类名的获取"><span class="nav-number">5.</span> <span class="nav-text">类名的获取</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Aspi1in</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

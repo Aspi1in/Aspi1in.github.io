@@ -229,6 +229,134 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/L1和L2正则化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/L1和L2正则化/" itemprop="url">L1和L2正则化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-08T22:04:19+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="什么是正则化"><a href="#什么是正则化" class="headerlink" title="什么是正则化"></a>什么是正则化</h4><p>当模型很复杂的时候就会出现过拟合的情况：<br><img src="/2018/06/08/L1和L2正则化/1528452168588.png" alt="lbxx"><br>所以我们需要降低特征的量来降低模型的复杂程度，从而抑制过拟合。</p>
+<p>原本的损失函数的定义为：<br><code>minimize(Loss(Data | Model))</code><br>现在以最小化损失和模型复杂度（结构风险最小化）为目标：<br><code>minimize(Loss(Data | Model) + complexity(Model)</code><br>通过降低复杂模型的复杂度来防止过拟合的规则称为正则化。这个概念应该不难理解，然后需要理解的就是模型的复杂程度如何量化，简单点可以理解成所有权重的和，当然这里肯定不是简单的求和来量化，意思就是说权重的多少和大小则可以间接描述模型的复杂程度。</p>
+<h4 id="范数"><a href="#范数" class="headerlink" title="范数"></a>范数</h4><p>范数是衡量某个向量空间（或矩阵）中的每个向量以长度或大小。范数的一般化定义：对实数p&gt;=1， 范数定义如下：<br><img src="/2018/06/08/L1和L2正则化/1528453570801.png" alt="lbxx"><br>L1范数<br>当p=1时，是L1范数，其表示某个向量中所有元素绝对值的和。<br>L2范数<br>当p=2时，是L2范数， 表示某个向量中所有元素平方和再开根， 也就是欧几里得距离公式。</p>
+<h4 id="正则化的数学原理"><a href="#正则化的数学原理" class="headerlink" title="正则化的数学原理"></a>正则化的数学原理</h4><ul>
+<li><p><strong>L1正则化</strong><br>L1正则化，即原损失函数 + 所有权重的平均绝对值 <em> λ ，其中λ &gt;0<br>根据损失更新ω，需要先对ω求导：<br><img src="/2018/06/08/L1和L2正则化/1528452998327.png" alt="lbxx"><br>比原始的更新规则多出了η </em> λ * sgn(ω)/n。<br><img src="/2018/06/08/L1和L2正则化/1528453035125.png" alt="lbxx"><br>可见每次更新，ω都是往0靠，即使网络中的权重尽可能为0。</p>
+</li>
+<li><p><strong>L2正则化</strong><br>L2正则化，即原损失函数 + 所有权重平方和的平均值 * λ / 2 , λ&gt;0<br><img src="/2018/06/08/L1和L2正则化/1528453070870.png" alt="lbxx"><br>同样，需要先对ω求导：<br><img src="/2018/06/08/L1和L2正则化/1528453091740.png" alt="lbxx"><br>那么权重ω的更新规则为：<br><img src="/2018/06/08/L1和L2正则化/1528453100908.png" alt="lbxx"><br>原始的更新规则ω系数为1，现在为 1ηλ/n 。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/卷积神经网络-CNN（3）/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1364,137 +1492,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/30/TensorFlow中查看tensor对象值的内容/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Aspi1in">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aspi1in's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/30/TensorFlow中查看tensor对象值的内容/" itemprop="url">TensorFlow中查看tensor对象值的内容</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-30T21:46:29+08:00">
-                2018-05-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>当我们直接调用<code>print</code>方法时：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sess = tf.Session()</span><br><span class="line"></span><br><span class="line">my_int_variable = tf.get_variable(<span class="string">"my_int_variable"</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], dtype=tf.int32,</span><br><span class="line">  initializer=tf.zeros_initializer)</span><br><span class="line">print(tensorObj)</span><br></pre></td></tr></table></figure></p>
-<p>会输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;tf.Variable &apos;my_int_variable:0&apos; shape=(1, 2, 3) dtype=int32_ref&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这个值是当前的tensor对象的基本属性，包括名字、型状、元素数据类型<br>我们为了方便调试需要看到tensor中存放的具体的数据的值，这时我们需要使用<code>tf.Print</code>方法<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tf.Print( </span><br><span class="line">input_, </span><br><span class="line">data, </span><br><span class="line">message=<span class="keyword">None</span>, </span><br><span class="line">first_n=<span class="keyword">None</span>, </span><br><span class="line">summarize=<span class="keyword">None</span>, </span><br><span class="line">name=<span class="keyword">None</span> </span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
-<p><strong>参数:</strong><br><code>input_</code>: 通过此op的一个tensor.<br><code>data</code>: 当此op被计算之后打印输出的tensor list。<br><code>message</code>: 错误消息的前缀，是一个string。<br><code>first_n</code>: 只记录first_n次. 总是记录负数;这是个缺省.<br><code>summarize</code>: 对每个tensor只打印的条目数量。如果是None，对于每个输入tensor只打印3个元素。<br><code>name</code>: op的名字.<br><strong>返回值:</strong><br>和<code>input_</code>相同的<code>tensor</code>.对于上边的例子我们只需在print那一行改成：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sess.run(tf.global_variables_initializer())</span><br><span class="line">sess.run(tf.Print(my_int_variable, [my_int_variable]))</span><br></pre></td></tr></table></figure></p>
-<p>这时候会输出：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[[<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>]]...]</span><br></pre></td></tr></table></figure></p>
-<p>因为summarize的默认值是3所以只输出了部分值，我们给<code>summarize</code>赋值：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sess.run(tf.Print(my_int_variable, [my_int_variable], summarize=<span class="number">100</span>))</span><br></pre></td></tr></table></figure></p>
-<p>输出：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[[[<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>][<span class="number">0</span> <span class="number">0</span> <span class="number">0</span>]]]</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1540,7 +1542,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1553,7 +1555,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
