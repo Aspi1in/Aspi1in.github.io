@@ -229,6 +229,142 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/Linux-Android-s-UID-PID/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/13/Linux-Android-s-UID-PID/" itemprop="url">Linux/Android 's UID & PID</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-13T21:44:10+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Linux’s-UID、PID"><a href="#Linux’s-UID、PID" class="headerlink" title="Linux’s UID、PID"></a>Linux’s UID、PID</h2><p>UID（User Identifier）<br>字面上理解就是用户ID的意思，Linux系统中的用户(UID)分为3类，即普通用户、根用户、系统用户。</p>
+<p>普通用户是指所有使用Linux系统的真实用户，这类用户可以使用用户名及密码登录系统。Linux有着极为详细的权限设置，所以一般来说普通用户只能在其家目录、系统临时目录或其他经过授权的目录中操作，以及操作属于该用户的文件。通常普通用户的UID大于500，因为在添加普通用户时，系统默认用户ID从500开始编号。</p>
+<p>根用户也就是root用户，它的ID是0，也被称为超级用户，root账户拥有对系统的完全控制权：可以修改、删除任何文件，运行任何命令。所以root用户也是系统里面最具危险性的用户，root用户甚至可以在系统正常运行时删除所有文件系统，造成无法挽回的灾难。所以一般情况下，使用root用户登录系统时需要十分小心。</p>
+<p>系统用户是指系统运行时必须有的用户，但并不是指真实的使用者。比如在RedHat或CentOS下运行网站服务时，需要使用系统用户apache来运行httpd进程，而运行MySQL数据库服务时，需要使用系统用户mysql来运行mysqld进程。在RedHat或CentOS下，系统用户的ID范围是1~499。下面给出的示例显示的是目前系统运行的进程，第一列是运行该进程的用户。</p>
+<p>PID（Process Identifier）<br>PID就是各进程的身份标识,程序一运行系统就会自动分配给进程一个独一无二的PID。进程中止后PID被系统回收，可能会被继续分配给新运行的程序。</p>
+<h2 id="Android’s-UID、PID"><a href="#Android’s-UID、PID" class="headerlink" title="Android’s UID、PID"></a>Android’s UID、PID</h2><p>Android是一个单用户系统（貌似现在有访客模式了，不知道是不是改了），因为一个非常重要的安全特性，就是<strong>沙箱模式</strong>，这可以保证不同的应用之间是彼此隔离的，比如对资源的隔离、设备管理的隔离和内存数据的隔离，这样就能很好的爆炸安全问题。实现的主要方法就是系统设计了在当应用安装时被分配了一个<code>UID</code>，不同的应用的<code>UID</code>是不同的（不是绝对的），这样彼此之间就像Linux上登录的不同账户一样，彼此是隔离的，无法互相访问的，这样就实现了<strong>沙箱模式</strong>。如下图所示：<br><img src="/2018/11/13/Linux-Android-s-UID-PID/15420906643414.gif" alt="lbxx"><br>两个应用分别操作自己的资源和设备，内存也被隔离，两者无法互相访问（无法直接互相访问）</p>
+<p>在Android中要想共享彼此的内存、资源和设备等信息，也是可以的，只需要在manifest文件中做一个配置：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">package</span>=<span class="string">"com.perseus.a"</span></span></span><br><span class="line"><span class="tag">　　　　　 <span class="attr">android:versionCode</span>=<span class="string">"1"</span></span></span><br><span class="line"><span class="tag">　　　　　 <span class="attr">android:versionName</span>=<span class="string">"1.0"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">android:sharedUserId</span>=<span class="string">"com.share"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>和<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">package</span>=<span class="string">"com.perseus.b"</span></span></span><br><span class="line"><span class="tag">　　　　　 <span class="attr">android:versionCode</span>=<span class="string">"1"</span></span></span><br><span class="line"><span class="tag">　　　　　 <span class="attr">android:versionName</span>=<span class="string">"1.0"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">android:sharedUserId</span>=<span class="string">"com.share"</span></span></span><br><span class="line"><span class="tag">&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这样<code>com.perseus.a</code>应用和<code>com.perseus.b</code>这两个应用就会使用同一个<code>UID</code>，这个是由系统在应用安装的时候进行处理的，当然，这个也不是说只要这里进行配置就可以进行资源共享的，因为Android要求能这样进行设置的两个应用必须使用相同的签名才行，这样就可以杜绝非法的进程读取问题。效果如下图：<br><img src="/2018/11/13/Linux-Android-s-UID-PID/15420912808972.gif" alt="lbxx"></p>
+<p><code>PID</code>就不说了，和Linux中的一样。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>很意外的收获，之所以去查这个问题，是因为看同事写的Framework中插桩的代码在通过Binder向桩点收集中心发送桩点触发消息时，在发送前后使用了两行代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> callerIdentity = Binder.clearCallingIdentity();</span><br><span class="line">MyManager.notifyAction(MyManager.ACTION_GET_LINE1_NUMBER, callingPackage);</span><br><span class="line">Binder.restoreCallingIdentity(callerIdentity);</span><br></pre></td></tr></table></figure></p>
+<p>我在查<code>Binder.clearCallingIdentity()</code>和<code>Binder.restoreCallingIdentity(callerIdentity)</code>这两个方法的过程中得知了<code>UID</code>和<code>PID</code>的两个概念，当然不是不知道是啥意思，只是不知道深入到操作系统的含义，所以就得到此文，会单独写一篇文章去记录Binder的这两个方法是为了干啥。</p>
+<p>得知这个特性之后解了我两个疑惑：</p>
+<ul>
+<li>Android的沙箱到底为何，为何可以实现App隔离</li>
+<li>为啥要拥有系统的某些权限，需要修改自己应用的AM文件中的<code>android:sharedUserId</code>属性，而且还要用系统应用的签名进行签名</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/29/记一次Android-8-0下的重打包工作/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1498,140 +1634,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/07/Android加固（一）/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Aspi1in">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aspi1in's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/07/Android加固（一）/" itemprop="url">Android加固（一）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-07T21:39:12+08:00">
-                2018-08-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="大致步骤"><a href="#大致步骤" class="headerlink" title="大致步骤"></a>大致步骤</h3><ul>
-<li>编写待加固apk程序</li>
-<li>编写脱壳程序</li>
-<li>编写绑定程序</li>
-<li>用绑定程序将待加固apk程序加密并绑定到脱壳程序的dex文件后</li>
-<li>将dex已经被绑定上文件的脱壳程序进行签名</li>
-</ul>
-<h3 id="加固原理"><a href="#加固原理" class="headerlink" title="加固原理"></a>加固原理</h3><p><code>source_apk</code> ：待加固apk<br><code>packing</code> ：用于将待加固apk合并到解壳操作的apk文件中<br><code>unshell_apk</code> ：用于将绑定到自身的密文解密，释放出原始apk文件，并进行动态加载，将其启动起来</p>
-<ul>
-<li>将待加固的apk文件<code>source_apk</code>加密为<code>code_source_apk</code>文件</li>
-<li>使用<code>packing</code>程序将加固过的<code>encode_source_apk</code>文件追加到用于执行unshell操作的apk文件<code>unshell_apk</code>的dex文件后</li>
-<li>编写执行unshell操作的apk文件<code>unshell_apk</code>，该程序主要负责在<code>Application</code>类的<code>attachBaseContext</code>方法中将追加绑定到自身的原始apk文件剥离并解密释放出来，进行动态加载，然后再在<code>Application</code>类的<code>onCreate</code>方法中将找到自身的application，并将动态加载的原始apk的application将其替换掉<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><h3 id="要注意的坑"><a href="#要注意的坑" class="headerlink" title="要注意的坑"></a>要注意的坑</h3></li>
-<li>原始apk中要构造一个<code>Application</code>类，用于在unshell程序中动态加载后进行查找</li>
-<li><code>Application</code>类在定义之后要在AM文件的<code>&lt;application&gt;&lt;/application&gt;</code>标签中声明</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1682,7 +1684,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">32</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
