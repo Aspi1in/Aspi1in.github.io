@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="杂谈,">
+  <meta name="keywords" content="Android逆向,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="上周周六晚上女朋友给我说，明天请我看电影，看《流浪地球》，应该是我上次去南京找她的时候，给她提起过我想看，那次因为时间关系没能看成，她记在心上了，所以我欣然接受了，虽然一个人去看，但是我也非常开心，周日13：20开场的，周日的天气很好，11：50坐上公交进城（公司比较偏），最骚的路上堵车了，貌似因为前面路上出什么幺蛾子，而且公交线路改了，武汉我是真的服了，修修修，来了几年了还在修，紧赶慢赶总算是赶">
-<meta name="keywords" content="杂谈">
+<meta name="description" content="起因有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用">
+<meta name="keywords" content="Android逆向">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《流浪地球》观后感（吐槽）">
-<meta property="og:url" content="http://yoursite.com/2019/03/11/《流浪地球》观后感（吐槽）/index.html">
+<meta property="og:title" content="Android Http请求底层实现">
+<meta property="og:url" content="http://yoursite.com/2019/08/14/Android-Http请求底层实现/index.html">
 <meta property="og:site_name" content="Aspi1in&#39;s Blog">
-<meta property="og:description" content="上周周六晚上女朋友给我说，明天请我看电影，看《流浪地球》，应该是我上次去南京找她的时候，给她提起过我想看，那次因为时间关系没能看成，她记在心上了，所以我欣然接受了，虽然一个人去看，但是我也非常开心，周日13：20开场的，周日的天气很好，11：50坐上公交进城（公司比较偏），最骚的路上堵车了，貌似因为前面路上出什么幺蛾子，而且公交线路改了，武汉我是真的服了，修修修，来了几年了还在修，紧赶慢赶总算是赶">
+<meta property="og:description" content="起因有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2019-03-11T10:39:00.000Z">
+<meta property="og:updated_time" content="2019-08-13T17:07:57.730Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《流浪地球》观后感（吐槽）">
-<meta name="twitter:description" content="上周周六晚上女朋友给我说，明天请我看电影，看《流浪地球》，应该是我上次去南京找她的时候，给她提起过我想看，那次因为时间关系没能看成，她记在心上了，所以我欣然接受了，虽然一个人去看，但是我也非常开心，周日13：20开场的，周日的天气很好，11：50坐上公交进城（公司比较偏），最骚的路上堵车了，貌似因为前面路上出什么幺蛾子，而且公交线路改了，武汉我是真的服了，修修修，来了几年了还在修，紧赶慢赶总算是赶">
+<meta name="twitter:title" content="Android Http请求底层实现">
+<meta name="twitter:description" content="起因有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/03/11/《流浪地球》观后感（吐槽）/">
+  <link rel="canonical" href="http://yoursite.com/2019/08/14/Android-Http请求底层实现/">
 
 
 
 
 
-  <title>《流浪地球》观后感（吐槽） | Aspi1in's Blog</title>
+  <title>Android Http请求底层实现 | Aspi1in's Blog</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/11/《流浪地球》观后感（吐槽）/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/14/Android-Http请求底层实现/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">《流浪地球》观后感（吐槽）</h1>
+          <h1 class="post-title" itemprop="name headline">Android Http请求底层实现</h1>
         
 
         <div class="post-meta">
@@ -262,8 +262,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-11T17:28:57+08:00">
-                2019-03-11
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-14T00:55:17+08:00">
+                2019-08-14
               </time>
             
 
@@ -300,11 +300,8 @@
       
 
       
-        <p>上周周六晚上女朋友给我说，明天请我看电影，看《流浪地球》，应该是我上次去南京找她的时候，给她提起过我想看，那次因为时间关系没能看成，她记在心上了，所以我欣然接受了，虽然一个人去看，但是我也非常开心，周日13：20开场的，周日的天气很好，11：50坐上公交进城（公司比较偏），最骚的路上堵车了，貌似因为前面路上出什么幺蛾子，而且公交线路改了，武汉我是真的服了，修修修，来了几年了还在修，紧赶慢赶总算是赶上了。</p>
-<p>说观后感了，感觉主线真的挺不错的，特效也还不错（不会感觉很廉价），查了下是韩国的一个公司做的，当看到介绍有一万多个推进器在推动地球的时候，然后镜头往上拉一直到空间站，感觉非常带感。前期感觉男女主角（不知道算不算是主角）有点作，然后中间好些个地方为了煽情强行煽情，不过商业电影，能赚到大众泪点就行，其实很多人说爷爷（吴孟达演的姥爷）挂掉的时候很感人，我感觉吧。。。有点僵硬，反正给我的感觉就是姥爷是被编剧安排死的，就是死的很形式化，为了煽情形式化的死掉了，真让我哽咽的是两个地方，一个是吴京开飞船去“自爆”点火，不是因为和儿子的生离死别感动到我（不是说没感动到我，没让我哽咽而已）而是吴京所饰演角色对大义的选择，其实这种东西，很虚无，电影中吴京所饰的角色之所以会选择牺牲自己，其实也是为了煽情的安排吧，因为我知道的真正的现实中这种绝对选择权是不可能留给人类感情的，科技上限会决定到底有没有入场券，极高情况下任何人都无权无能力决策到这种事件当中。但是缩小来看，这就是个舍生取义的事儿，因为很多人实际上是不会这么选的，我把自己代入到角色中，我问自己敢不敢撞过去？我很难给我出我自己答案，我不知道我敢不敢，我现在可以坐在电脑前敲着键盘说我自己可以舍生取义，但事实哪一天真的来了，我怕我很可能会选择自己的狗命重要，电影演出了我理想中完美价值的东西，所以我可能有点感动吧。还有就是女主广播后很多人回头去搏一把，帮助推闸点火，这种煽情同样是剧情安排，但是我在想的是，这种情况下，人是怎么想，才可能回头搏那0%的希望呢，很多人会说，没有什么可以失去了，为啥不去搏一搏呢，殊不知万念俱灰，哀莫大于心死，莫斯都算过了，0%的成功率，很多人已经放弃一切了，我真的佩服在这种真正绝望的情况下还愿意拼最后一次的人。</p>
-<p>反正有些地方看的我很尴尬，比如最后一节妹妹掉下，哥哥松手跳下去救她，尼玛比萨斜塔快按不住了，不说地球不是真空了，哥哥咋的所受的空气阻力还不比妹妹大？难不成哥哥还会“千斤坠”能下去拉住妹妹，当时我就惊了，石破天跳崖救阿秀不过如此，但是《侠客行》特么是武侠啊（其实算是玄幻了），这尼玛是科幻电影啊。还有就是莫斯算出了点木星推走地球的成功率是0%了，还尼玛驾船去点火？只能说那个时候的人工和现在估计也没差多远，智障复读机而已，严谨的计算出成功率是0%之后，是万不可能选择去撞的，拿人类文明延续去搏0%几率的地球生还我感觉这是个剧情bug，还有“洛希极限”看完之后挺感兴趣的，去搜了，结果被爆说是个剧情bug，剧中给出的洛希极限的数值不对，当然这不是很影响。</p>
-<p>总的来说中国的科幻故事和科幻电影是在进步的，感觉看完于小瑕疵，但是感觉电影票还是值的，还有就是整部剧有俄罗斯人，有日本人，有韩国人，编剧安排他们都做了好人，为了亲人、人类、地球而战，中国人就该这样，绝不故意黑谁，不做那种下作之事。</p>
-
+        <h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用实现过程。</p>
+<h4 id="App上的起始调用"><a href="#App上的起始调用" class="headerlink" title="App上的起始调用"></a>App上的起始调用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.打开 URLConnection</span></span><br><span class="line">URL url = <span class="keyword">new</span> URL(<span class="string">"http://www.baidu.com"</span>);</span><br><span class="line">HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 2.设置参数</span></span><br><span class="line">    urlConnection.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">    urlConnection.setChunkedStreamingMode(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 3.获取输出流</span></span><br><span class="line">    OutputStream out = <span class="keyword">new</span> BufferedOutputStream(urlConnection.getOutputStream());</span><br><span class="line">    <span class="comment">// 4.写入参数</span></span><br><span class="line">    writeStream(out);</span><br><span class="line">    <span class="comment">// 5.获取读入流</span></span><br><span class="line">    InputStream in = <span class="keyword">new</span> BufferedInputStream(urlConnection.getInputStream());</span><br><span class="line">    <span class="comment">// 6.读取数据</span></span><br><span class="line">    readStream(in);</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line"><span class="comment">// 7.断开连接</span></span><br><span class="line">    urlConnection.disconnect();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
     
@@ -321,7 +318,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/杂谈/" rel="tag"># 杂谈</a>
+            <a href="/tags/Android逆向/" rel="tag"># Android逆向</a>
           
         </div>
       
@@ -334,8 +331,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/04/React知识-组件-Component/" rel="next" title="React知识 组件 Component">
-                <i class="fa fa-chevron-left"></i> React知识 组件 Component
+              <a href="/2019/03/15/Java动态代理-Proxy和InvocationHandler/" rel="next" title="Java动态代理 Proxy和InvocationHandler">
+                <i class="fa fa-chevron-left"></i> Java动态代理 Proxy和InvocationHandler
               </a>
             
           </div>
@@ -343,10 +340,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/03/13/近期学习计划和一些乱七八糟/" rel="prev" title="近期学习计划和一些乱七八糟">
-                近期学习计划和一些乱七八糟 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -398,8 +391,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -450,6 +452,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#起因"><span class="nav-number">1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#App上的起始调用"><span class="nav-number">2.</span> <span class="nav-text">App上的起始调用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

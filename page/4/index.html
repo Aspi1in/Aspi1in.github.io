@@ -229,6 +229,130 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/04/数据标准化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/04/数据标准化/" itemprop="url">数据标准化</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-04T21:51:06+08:00">
+                2018-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>大致解释为什么要做标准化，举个例子：下载有一组数据是：<code>[1, 12, 99, 34, 560, 7]</code><br>我们直接将这些值作为特征进行训练不利于在进行优化算法寻找最优解，而且对权重的初始化也有一定的影响，数据标准化就是指：<strong>将数据按照比例缩放，使之落在一个特定区间上</strong>。</p>
+<h4 id="常用的方法"><a href="#常用的方法" class="headerlink" title="常用的方法"></a>常用的方法</h4><ul>
+<li><strong>min-max标准化</strong><br>离差标准化，对原始数据做线性转换，公式如下：<br>$$x^<em>=\frac{x-min}{max-min}$$<br>其中<code>max</code>是这组数据中的最大值，<code>min</code>是最小值，<code>x</code>是当前值，`x</em>`是min-max标准化之后的结，这样可以使所有的数据落在[0, 1]区间内，从而实现标准化。</li>
+<li><strong>z-score标准化</strong><br>标准差标准化，归一化后数据呈正态分布，即均值为0，公式如下：<br>$$x^*=\frac{x-\mu}{\sigma}$$<br>其中<code>u</code>是所有样本数据的均值，<code>σ</code>是所有样本的数据的标准差</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/30/Softmax函数/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -513,7 +637,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

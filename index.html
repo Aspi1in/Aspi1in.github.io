@@ -229,6 +229,126 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/14/Android-Http请求底层实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/14/Android-Http请求底层实现/" itemprop="url">Android Http请求底层实现</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-14T00:55:17+08:00">
+                2019-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用实现过程。</p>
+<h4 id="App上的起始调用"><a href="#App上的起始调用" class="headerlink" title="App上的起始调用"></a>App上的起始调用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.打开 URLConnection</span></span><br><span class="line">URL url = <span class="keyword">new</span> URL(<span class="string">"http://www.baidu.com"</span>);</span><br><span class="line">HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 2.设置参数</span></span><br><span class="line">    urlConnection.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">    urlConnection.setChunkedStreamingMode(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 3.获取输出流</span></span><br><span class="line">    OutputStream out = <span class="keyword">new</span> BufferedOutputStream(urlConnection.getOutputStream());</span><br><span class="line">    <span class="comment">// 4.写入参数</span></span><br><span class="line">    writeStream(out);</span><br><span class="line">    <span class="comment">// 5.获取读入流</span></span><br><span class="line">    InputStream in = <span class="keyword">new</span> BufferedInputStream(urlConnection.getInputStream());</span><br><span class="line">    <span class="comment">// 6.读取数据</span></span><br><span class="line">    readStream(in);</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line"><span class="comment">// 7.断开连接</span></span><br><span class="line">    urlConnection.disconnect();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/15/Java动态代理-Proxy和InvocationHandler/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1619,134 +1739,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/16/RunningFlow-一-线程的层级关系/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Aspi1in">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Aspi1in's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/16/RunningFlow-一-线程的层级关系/" itemprop="url">RunningFlow(一) 线程的层级关系</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-16T00:16:41+08:00">
-                2018-11-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>什么是<strong>RunningFlow</strong>暂时不能说。</p>
-<p>有一个需要解决的技术可行性问题是：我想得到线程执行的层级关系，即：主线程（UI线程）创建子线程（tid=200），然后子线程（tid=200）中再创建一个新的子线程（tid=201），要想要得到<code>MainThread -&gt; tid=200 -&gt; tid=201</code>这样的关系，遗憾的是，尝试之后发现，在Android的一个应用中，只有主线程和子线程的两级关系，不存在类似：爷爷、爸爸、儿子这种多级关系，验证代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"AAAAA"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        <span class="comment">//返回当前线程的id</span></span><br><span class="line">        Log.e(TAG, <span class="string">"当前线程的id = "</span></span><br><span class="line">                + Thread.currentThread().getId());</span><br><span class="line">        <span class="comment">//返回主线程的id</span></span><br><span class="line">        Log.e(TAG, <span class="string">"主线程的id = "</span></span><br><span class="line">                + getMainLooper().getThread().getId());</span><br><span class="line"></span><br><span class="line">        <span class="comment">//返回当前应用的主线程id</span></span><br><span class="line">        Log.e(TAG,</span><br><span class="line">                <span class="string">"当前应用的主线程id = "</span></span><br><span class="line">                        + ((getApplication().getMainLooper()).getThread())</span><br><span class="line">                        .getId());</span><br><span class="line">        <span class="keyword">new</span> MyThread().execute();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThread</span> <span class="keyword">extends</span> <span class="title">AsyncTask</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> Object <span class="title">doInBackground</span><span class="params">(Object[] objects)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">6</span>; i++) &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"Msg: "</span> + i);</span><br><span class="line">                <span class="keyword">new</span> MyThreadS().execute();</span><br><span class="line">                <span class="comment">//Log.e(TAG, "当前线程的id = " + android.os.Process.myPid());</span></span><br><span class="line">                <span class="comment">//返回当前线程的id</span></span><br><span class="line">                Log.e(TAG, <span class="string">"当前线程的id = "</span></span><br><span class="line">                        + Thread.currentThread().getId());</span><br><span class="line">                <span class="comment">//返回主线程的id</span></span><br><span class="line">                Log.e(TAG, <span class="string">"主线程的id = "</span></span><br><span class="line">                        + getMainLooper().getThread().getId());</span><br><span class="line"></span><br><span class="line">                <span class="comment">//返回当前应用的主线程id</span></span><br><span class="line">                Log.e(TAG,</span><br><span class="line">                        <span class="string">"当前应用的主线程id = "</span></span><br><span class="line">                                + ((getApplication().getMainLooper()).getThread())</span><br><span class="line">                                .getId());</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyThreadS</span> <span class="keyword">extends</span> <span class="title">AsyncTask</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> Object <span class="title">doInBackground</span><span class="params">(Object[] objects)</span> </span>&#123;</span><br><span class="line">            Log.i(TAG, <span class="string">"Msg: "</span> + <span class="string">"-----"</span>);</span><br><span class="line">            <span class="comment">//Log.e(TAG, "当前线程的id = " + android.os.Process.myPid());</span></span><br><span class="line">            <span class="comment">//返回当前线程的id</span></span><br><span class="line">            Log.e(TAG, <span class="string">"-----当前线程的id = "</span></span><br><span class="line">                    + Thread.currentThread().getId());</span><br><span class="line">            <span class="comment">//返回主线程的id</span></span><br><span class="line">            Log.e(TAG, <span class="string">"-----主线程的id = "</span></span><br><span class="line">                    + getMainLooper().getThread().getId());</span><br><span class="line"></span><br><span class="line">            <span class="comment">//返回当前应用的主线程id</span></span><br><span class="line">            Log.e(TAG,</span><br><span class="line">                    <span class="string">"-----当前应用的主线程id = "</span></span><br><span class="line">                            + ((getApplication().getMainLooper()).getThread())</span><br><span class="line">                            .getId());</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>很low的代码但是能看出东西，输出的内容:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">12-27 13:53:52.149 9292-9308/com.antiy.demo.binderproj I/AAAAA: Msg: 0</span><br><span class="line">12-27 13:53:52.150 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前线程的id = 291</span><br><span class="line">12-27 13:53:52.151 9292-9308/com.antiy.demo.binderproj E/AAAAA: 主线程的id = 2</span><br><span class="line">12-27 13:53:52.151 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前应用的主线程id = 2</span><br><span class="line">12-27 13:53:53.152 9292-9308/com.antiy.demo.binderproj I/AAAAA: Msg: 1</span><br><span class="line">12-27 13:53:53.153 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前线程的id = 291</span><br><span class="line">12-27 13:53:53.153 9292-9308/com.antiy.demo.binderproj E/AAAAA: 主线程的id = 2</span><br><span class="line">12-27 13:53:53.154 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前应用的主线程id = 2</span><br><span class="line">12-27 13:53:54.154 9292-9308/com.antiy.demo.binderproj I/AAAAA: Msg: 2</span><br><span class="line">12-27 13:53:54.155 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前线程的id = 291</span><br><span class="line">12-27 13:53:54.155 9292-9308/com.antiy.demo.binderproj E/AAAAA: 主线程的id = 2</span><br><span class="line">12-27 13:53:54.156 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前应用的主线程id = 2</span><br><span class="line">12-27 13:53:55.157 9292-9308/com.antiy.demo.binderproj I/AAAAA: Msg: 3</span><br><span class="line">12-27 13:53:55.157 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前线程的id = 291</span><br><span class="line">12-27 13:53:55.157 9292-9308/com.antiy.demo.binderproj E/AAAAA: 主线程的id = 2</span><br><span class="line">12-27 13:53:55.158 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前应用的主线程id = 2</span><br><span class="line">12-27 13:53:56.158 9292-9308/com.antiy.demo.binderproj I/AAAAA: Msg: 4</span><br><span class="line">12-27 13:53:56.159 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前线程的id = 291</span><br><span class="line">12-27 13:53:56.159 9292-9308/com.antiy.demo.binderproj E/AAAAA: 主线程的id = 2</span><br><span class="line">12-27 13:53:56.164 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前应用的主线程id = 2</span><br><span class="line">12-27 13:53:57.164 9292-9308/com.antiy.demo.binderproj I/AAAAA: Msg: 5</span><br><span class="line">12-27 13:53:57.165 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前线程的id = 291</span><br><span class="line">12-27 13:53:57.165 9292-9308/com.antiy.demo.binderproj E/AAAAA: 主线程的id = 2</span><br><span class="line">12-27 13:53:57.166 9292-9308/com.antiy.demo.binderproj E/AAAAA: 当前应用的主线程id = 2</span><br><span class="line">12-27 13:53:58.171 9292-9315/com.antiy.demo.binderproj I/AAAAA: Msg: -----</span><br><span class="line">12-27 13:53:58.171 9292-9315/com.antiy.demo.binderproj E/AAAAA: -----当前线程的id = 294</span><br><span class="line">12-27 13:53:58.171 9292-9315/com.antiy.demo.binderproj E/AAAAA: -----主线程的id = 2</span><br><span class="line">12-27 13:53:58.172 9292-9315/com.antiy.demo.binderproj E/AAAAA: -----当前应用的主线程id = 2</span><br><span class="line">12-27 13:53:59.176 9292-9316/com.antiy.demo.binderproj I/AAAAA: Msg: -----</span><br><span class="line">12-27 13:53:59.177 9292-9316/com.antiy.demo.binderproj E/AAAAA: -----当前线程的id = 295</span><br><span class="line">12-27 13:53:59.177 9292-9316/com.antiy.demo.binderproj E/AAAAA: -----主线程的id = 2</span><br><span class="line">12-27 13:53:59.178 9292-9316/com.antiy.demo.binderproj E/AAAAA: -----当前应用的主线程id = 2</span><br><span class="line">12-27 13:54:00.182 9292-9317/com.antiy.demo.binderproj I/AAAAA: Msg: -----</span><br><span class="line">12-27 13:54:00.183 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前线程的id = 296</span><br><span class="line">12-27 13:54:00.183 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----主线程的id = 2</span><br><span class="line">12-27 13:54:00.183 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前应用的主线程id = 2</span><br><span class="line">12-27 13:54:01.187 9292-9317/com.antiy.demo.binderproj I/AAAAA: Msg: -----</span><br><span class="line">12-27 13:54:01.188 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前线程的id = 296</span><br><span class="line">12-27 13:54:01.188 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----主线程的id = 2</span><br><span class="line">12-27 13:54:01.188 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前应用的主线程id = 2</span><br><span class="line">12-27 13:54:02.193 9292-9317/com.antiy.demo.binderproj I/AAAAA: Msg: -----</span><br><span class="line">12-27 13:54:02.194 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前线程的id = 296</span><br><span class="line">12-27 13:54:02.194 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----主线程的id = 2</span><br><span class="line">12-27 13:54:02.194 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前应用的主线程id = 2</span><br><span class="line">12-27 13:54:03.198 9292-9317/com.antiy.demo.binderproj I/AAAAA: Msg: -----</span><br><span class="line">12-27 13:54:03.199 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前线程的id = 296</span><br><span class="line">12-27 13:54:03.199 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----主线程的id = 2</span><br><span class="line">12-27 13:54:03.199 9292-9317/com.antiy.demo.binderproj E/AAAAA: -----当前应用的主线程id = 2</span><br></pre></td></tr></table></figure></p>
-<p>这里并没有ParentTid这种东西，我看了Android 8.0的<code>Thread.java</code>的源码，其中确实没有记录创建当前线程的线程信息的变量，但是确实应该是可以在<code>Thread.java</code>进行操作的，看下关键的创建线程的源码:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Initializes a Thread.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> g the Thread group</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target the object whose run() method gets called</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> name the name of the new Thread</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> stackSize the desired stack size for the new thread, or</span></span><br><span class="line"><span class="comment"> *        zero to indicate that this parameter is to be ignored.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(ThreadGroup g, Runnable target, String name, <span class="keyword">long</span> stackSize)</span> </span>&#123;</span><br><span class="line">    Thread parent = currentThread();</span><br><span class="line">    <span class="keyword">if</span> (g == <span class="keyword">null</span>) &#123;</span><br><span class="line">        g = parent.getThreadGroup();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    g.addUnstarted();</span><br><span class="line">    <span class="keyword">this</span>.group = g;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.target = target;</span><br><span class="line">    <span class="keyword">this</span>.priority = parent.getPriority();</span><br><span class="line">    <span class="keyword">this</span>.daemon = parent.isDaemon();</span><br><span class="line">    setName(name);</span><br><span class="line"></span><br><span class="line">    init2(parent);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Stash the specified stack size in case the VM cares */</span></span><br><span class="line">    <span class="keyword">this</span>.stackSize = stackSize;</span><br><span class="line">    tid = nextThreadID();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里如果在这个函数里获取当前线程的tid记为<code>p_tid</code>，那么<code>tid = nextThreadID();</code>执行完之后获取到的新的<code>tid</code>，应该就可以认为是<code>p_tid</code>所对应的线程的代码创建的线程了。<br>在<code>init()</code>方法中，直接执行:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> p_tid = parent.getId();</span><br></pre></td></tr></table></figure></p>
-<p>然后上报：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"ParentTid"</span>: p_tid,</span><br><span class="line">    <span class="attr">"ChildTid"</span>: tid</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在上层在接收到这个信息后，维护一个<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ParentTid -&gt; ChildTid</span><br></pre></td></tr></table></figure></p>
-<p>这样的表就可以了。</p>
-<p>不过我还是要研究下在<code>getAllStackTraces()</code>方法中通过调用堆栈相关的信息能不能获取到这个对应关系，如果可以，就不用在<code>Thread.java</code>中打点插桩了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1797,7 +1789,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
