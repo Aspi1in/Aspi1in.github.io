@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/21/Android-Http请求底层实现/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/14/Android-Http请求底层实现/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Aspi1in">
@@ -248,7 +248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/08/21/Android-Http请求底层实现/" itemprop="url">Android Http请求底层实现</a></h1>
+                <a class="post-title-link" href="/2019/08/14/Android-Http请求底层实现/" itemprop="url">Android Http请求底层实现</a></h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-21T00:55:17+08:00">
-                2019-08-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-14T00:55:17+08:00">
+                2019-08-14
               </time>
             
 
@@ -315,7 +315,7 @@
 <p>没干啥事儿，就是把传递进来的<code>OkHttpClient</code>实例保存下来，接着就调用父类的构造方法了，传递的就是上游的<code>URL</code>实例，到父类里看：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpURLConnection</span> <span class="keyword">extends</span> <span class="title">URLConnection</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="title">HttpURLConnection</span> <span class="params">(URL u)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(u);</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>依然是将<code>URL</code>实例交给父类的构造方法，看父类<code>URLConnection</code>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">URLConnection</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">URLConnection</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.url = url;</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>很nice，还是啥都没干，一路下来都在赋值赋值赋值，完全看不到网络的具体连接。。。</p>
-<p>整理下分析至此为止的流程：<br><img src="/2019/08/21/Android-Http请求底层实现/Android-URL-openConnection流程图.png" alt="lbxx"></p>
+<p>整理下分析至此为止的流程：<br><img src="/2019/08/14/Android-Http请求底层实现/Android-URL-openConnection流程图.png" alt="lbxx"></p>
 
           
         
