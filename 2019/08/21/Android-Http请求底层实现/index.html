@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android逆向,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="起因有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用">
+<meta name="keywords" content="Android逆向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Http请求底层实现">
+<meta property="og:url" content="http://yoursite.com/2019/08/21/Android-Http请求底层实现/index.html">
+<meta property="og:site_name" content="Aspi1in&#39;s Blog">
+<meta property="og:description" content="起因有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="http://yoursite.com/2019/08/21/Android-Http请求底层实现/Android-URL-openConnection流程图.png">
+<meta property="og:updated_time" content="2019-08-21T11:57:51.934Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android Http请求底层实现">
+<meta name="twitter:description" content="起因有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用">
+<meta name="twitter:image" content="http://yoursite.com/2019/08/21/Android-Http请求底层实现/Android-URL-openConnection流程图.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/08/21/Android-Http请求底层实现/">
+
+
+
+
+
+  <title>Android Http请求底层实现 | Aspi1in's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Aspi1in's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/21/Android-Http请求底层实现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Aspi1in">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aspi1in's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android Http请求底层实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-21T00:55:17+08:00">
+                2019-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h4><p>有个工作需求是做一个沙盒对一些静态行为进行hook，其中一个场景是需要捕获到应用的Http请求和响应，包括参数数据和响应数据，目前的方案有：魔改VirtualApp、使用VirtualXposed、直接在源码中插桩输出。但是不管是哪种方式，都要确定http请求在底层的最终调用栈，从而确定桩点插在哪里，暂时没有调研知名的第三方库在底层的实现部分，本文先分析记录系统原生的http网络请求的底层调用实现过程，源码版本是8.1.0_r33。</p>
+<h4 id="App上的起始调用"><a href="#App上的起始调用" class="headerlink" title="App上的起始调用"></a>App上的起始调用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.打开 URLConnection</span></span><br><span class="line">URL url = <span class="keyword">new</span> URL(<span class="string">"http://www.baidu.com"</span>);</span><br><span class="line">HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 2.设置参数</span></span><br><span class="line">    urlConnection.setDoOutput(<span class="keyword">true</span>);</span><br><span class="line">    urlConnection.setChunkedStreamingMode(<span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 3.获取输出流</span></span><br><span class="line">    OutputStream out = <span class="keyword">new</span> BufferedOutputStream(urlConnection.getOutputStream());</span><br><span class="line">    <span class="comment">// 4.写入参数</span></span><br><span class="line">    writeStream(out);</span><br><span class="line">    <span class="comment">// 5.获取读入流</span></span><br><span class="line">    InputStream in = <span class="keyword">new</span> BufferedInputStream(urlConnection.getInputStream());</span><br><span class="line">    <span class="comment">// 6.读取数据</span></span><br><span class="line">    readStream(in);</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line"><span class="comment">// 7.断开连接</span></span><br><span class="line">    urlConnection.disconnect();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="调用链分析"><a href="#调用链分析" class="headerlink" title="调用链分析"></a>调用链分析</h4><p><code>URL url = new URL(&quot;http://www.baidu.com&quot;);</code></p>
+<p>第一步调用<code>URL</code>类实例化出对象，看<code>URL</code>的构造方法，接受一个<code>String</code>类型参数的构造方法，所在包：<code>java.net.URL</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">URL</span><span class="params">(String spec)</span> <span class="keyword">throws</span> MalformedURLException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(<span class="keyword">null</span>, spec);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">URL</span><span class="params">(URL context, String spec)</span> <span class="keyword">throws</span> MalformedURLException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(context, spec, <span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">URL</span><span class="params">(URL context, String spec, URLStreamHandler handler)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> MalformedURLException</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    String original = spec;</span><br><span class="line">    <span class="keyword">int</span> i, limit, c;</span><br><span class="line">    <span class="keyword">int</span> start = <span class="number">0</span>;</span><br><span class="line">    String newProtocol = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">boolean</span> aRef=<span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">boolean</span> isRelative = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check for permission to specify a handler</span></span><br><span class="line">    <span class="keyword">if</span> (handler != <span class="keyword">null</span>) &#123;</span><br><span class="line">        SecurityManager sm = System.getSecurityManager();</span><br><span class="line">        <span class="keyword">if</span> (sm != <span class="keyword">null</span>) &#123;</span><br><span class="line">            checkSpecifyHandler(sm);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 根据url字符串获取协议类型(http/https/ftp等)</span></span><br><span class="line">        limit = spec.length();</span><br><span class="line">        <span class="keyword">while</span> ((limit &gt; <span class="number">0</span>) &amp;&amp; (spec.charAt(limit - <span class="number">1</span>) &lt;= <span class="string">' '</span>)) &#123;</span><br><span class="line">            limit--;        <span class="comment">//eliminate trailing whitespace</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> ((start &lt; limit) &amp;&amp; (spec.charAt(start) &lt;= <span class="string">' '</span>)) &#123;</span><br><span class="line">            start++;        <span class="comment">// eliminate leading whitespace</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (spec.regionMatches(<span class="keyword">true</span>, start, <span class="string">"url:"</span>, <span class="number">0</span>, <span class="number">4</span>)) &#123;</span><br><span class="line">            start += <span class="number">4</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (start &lt; spec.length() &amp;&amp; spec.charAt(start) == <span class="string">'#'</span>) &#123;</span><br><span class="line">            <span class="comment">/* we're assuming this is a ref relative to the context URL.</span></span><br><span class="line"><span class="comment">                * This means protocols cannot start w/ '#', but we must parse</span></span><br><span class="line"><span class="comment">                * ref URL's like: "hello:there" w/ a ':' in them.</span></span><br><span class="line"><span class="comment">                */</span></span><br><span class="line">            aRef=<span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (i = start ; !aRef &amp;&amp; (i &lt; limit) &amp;&amp;</span><br><span class="line">                    ((c = spec.charAt(i)) != <span class="string">'/'</span>) ; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (c == <span class="string">':'</span>) &#123;</span><br><span class="line"></span><br><span class="line">                String s = spec.substring(start, i).toLowerCase();</span><br><span class="line">                <span class="keyword">if</span> (isValidProtocol(s)) &#123;</span><br><span class="line">                    newProtocol = s;</span><br><span class="line">                    start = i + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Only use our context if the protocols match.</span></span><br><span class="line">        <span class="comment">// 使用已有的URL对象信息，进行一些赋值</span></span><br><span class="line">        protocol = newProtocol;</span><br><span class="line">        <span class="keyword">if</span> ((context != <span class="keyword">null</span>) &amp;&amp; ((newProtocol == <span class="keyword">null</span>) ||</span><br><span class="line">                        newProtocol.equalsIgnoreCase(context.protocol))) &#123;</span><br><span class="line">            <span class="comment">// inherit the protocol handler from the context</span></span><br><span class="line">            <span class="comment">// if not specified to the constructor</span></span><br><span class="line">            <span class="keyword">if</span> (handler == <span class="keyword">null</span>) &#123;</span><br><span class="line">                handler = context.handler;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// If the context is a hierarchical URL scheme and the spec</span></span><br><span class="line">            <span class="comment">// contains a matching scheme then maintain backwards</span></span><br><span class="line">            <span class="comment">// compatibility and treat it as if the spec didn't contain</span></span><br><span class="line">            <span class="comment">// the scheme; see 5.2.3 of RFC2396</span></span><br><span class="line">            <span class="keyword">if</span> (context.path != <span class="keyword">null</span> &amp;&amp; context.path.startsWith(<span class="string">"/"</span>))</span><br><span class="line">                newProtocol = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (newProtocol == <span class="keyword">null</span>) &#123;</span><br><span class="line">                protocol = context.protocol;</span><br><span class="line">                authority = context.authority;</span><br><span class="line">                userInfo = context.userInfo;</span><br><span class="line">                host = context.host;</span><br><span class="line">                port = context.port;</span><br><span class="line">                file = context.file;</span><br><span class="line">                path = context.path;</span><br><span class="line">                isRelative = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (protocol == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> MalformedURLException(<span class="string">"no protocol: "</span>+original);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Get the protocol handler if not specified or the protocol</span></span><br><span class="line">        <span class="comment">// of the context could not be used</span></span><br><span class="line">        <span class="comment">// 根据不同的协议名称构造响应的StreamHandler</span></span><br><span class="line">        <span class="keyword">if</span> (handler == <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">            (handler = getURLStreamHandler(protocol)) == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> MalformedURLException(<span class="string">"unknown protocol: "</span>+protocol);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.handler = handler;</span><br><span class="line"></span><br><span class="line">        i = spec.indexOf(<span class="string">'#'</span>, start);</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">            ref = spec.substring(i + <span class="number">1</span>, limit);</span><br><span class="line">            limit = i;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">            * Handle special case inheritance of query and fragment</span></span><br><span class="line"><span class="comment">            * implied by RFC2396 section 5.2.2.</span></span><br><span class="line"><span class="comment">            */</span></span><br><span class="line">        <span class="keyword">if</span> (isRelative &amp;&amp; start == limit) &#123;</span><br><span class="line">            query = context.query;</span><br><span class="line">            <span class="keyword">if</span> (ref == <span class="keyword">null</span>) &#123;</span><br><span class="line">                ref = context.ref;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 解析出host、参数等信息</span></span><br><span class="line">        handler.parseURL(<span class="keyword">this</span>, spec, start, limit);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span>(MalformedURLException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> e;</span><br><span class="line">    &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">        MalformedURLException exception = <span class="keyword">new</span> MalformedURLException(e.getMessage());</span><br><span class="line">        exception.initCause(e);</span><br><span class="line">        <span class="keyword">throw</span> exception;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里只有两个需要重点关注的函数<code>getURLStreamHandler()</code>和<code>handler.parseURL()</code>，其中<code>getURLStreamHandler()</code>函数里重点是根据不同的协议获取对应的<code>URLStreamHandler</code>，这个<code>URLStreamHandler</code>是个抽象类，里面实现了具体的<code>parseURL()</code>方法，主要就是根据url提取host、port、参数、文件路径等信息。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> URLStreamHandler <span class="title">getURLStreamHandler</span><span class="params">(String protocol)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Fallback to built-in stream handler.</span></span><br><span class="line">        <span class="comment">// Makes okhttp the default http/https handler</span></span><br><span class="line">        <span class="keyword">if</span> (handler == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// BEGIN Android-changed</span></span><br><span class="line">                <span class="comment">// Use of okhttp for http and https</span></span><br><span class="line">                <span class="comment">// Removed unnecessary use of reflection for sun classes</span></span><br><span class="line">                <span class="keyword">if</span> (protocol.equals(<span class="string">"file"</span>)) &#123;</span><br><span class="line">                    handler = <span class="keyword">new</span> sun.net.www.protocol.file.Handler();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (protocol.equals(<span class="string">"ftp"</span>)) &#123;</span><br><span class="line">                    handler = <span class="keyword">new</span> sun.net.www.protocol.ftp.Handler();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (protocol.equals(<span class="string">"jar"</span>)) &#123;</span><br><span class="line">                    handler = <span class="keyword">new</span> sun.net.www.protocol.jar.Handler();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (protocol.equals(<span class="string">"http"</span>)) &#123;</span><br><span class="line">                    handler = (URLStreamHandler)Class.</span><br><span class="line">                        forName(<span class="string">"com.android.okhttp.HttpHandler"</span>).newInstance();</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (protocol.equals(<span class="string">"https"</span>)) &#123;</span><br><span class="line">                    handler = (URLStreamHandler)Class.</span><br><span class="line">                        forName(<span class="string">"com.android.okhttp.HttpsHandler"</span>).newInstance();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// END Android-changed</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> handler;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>中间省略了部分代码，可以看出来，Android对Java的这部分进行了部分修改，http和https使用了okhttp的实现过程。<br>进入到<code>com.android.okhttp.HttpHandler</code>中，<code>HttpHandler</code>继承自抽象类<code>URLStreamHandler</code>，具体的实现了<code>openConnection()</code>方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> URLConnection <span class="title">openConnection</span><span class="params">(URL url)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> newOkUrlFactory(<span class="keyword">null</span> <span class="comment">/* proxy */</span>).open(url);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> URLConnection <span class="title">openConnection</span><span class="params">(URL url, Proxy proxy)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (url == <span class="keyword">null</span> || proxy == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"url == null || proxy == null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newOkUrlFactory(proxy).open(url);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>模板方法，这里我们分析使用代理的情况，看<code>newOkUrlFactory()</code>方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> OkUrlFactory <span class="title">newOkUrlFactory</span><span class="params">(Proxy proxy)</span> </span>&#123;</span><br><span class="line">    OkUrlFactory okUrlFactory = createHttpOkUrlFactory(proxy);</span><br><span class="line">    <span class="comment">// For HttpURLConnections created through java.net.URL Android uses a connection pool that</span></span><br><span class="line">    <span class="comment">// is aware when the default network changes so that pooled connections are not re-used when</span></span><br><span class="line">    <span class="comment">// the default network changes.</span></span><br><span class="line">    okUrlFactory.client().setConnectionPool(configAwareConnectionPool.get());</span><br><span class="line">    <span class="keyword">return</span> okUrlFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看<code>createHttpOkUrlFactory()</code>方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> OkUrlFactory <span class="title">createHttpOkUrlFactory</span><span class="params">(Proxy proxy)</span> </span>&#123;</span><br><span class="line">    OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Explicitly set the timeouts to infinity.</span></span><br><span class="line">    client.setConnectTimeout(<span class="number">0</span>, TimeUnit.MILLISECONDS);</span><br><span class="line">    client.setReadTimeout(<span class="number">0</span>, TimeUnit.MILLISECONDS);</span><br><span class="line">    client.setWriteTimeout(<span class="number">0</span>, TimeUnit.MILLISECONDS);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set the default (same protocol) redirect behavior. The default can be overridden for</span></span><br><span class="line">    <span class="comment">// each instance using HttpURLConnection.setInstanceFollowRedirects().</span></span><br><span class="line">    client.setFollowRedirects(HttpURLConnection.getFollowRedirects());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Do not permit http -&gt; https and https -&gt; http redirects.</span></span><br><span class="line">    client.setFollowSslRedirects(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Permit cleartext traffic only (this is a handler for HTTP, not for HTTPS).</span></span><br><span class="line">    client.setConnectionSpecs(CLEARTEXT_ONLY);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// When we do not set the Proxy explicitly OkHttp picks up a ProxySelector using</span></span><br><span class="line">    <span class="comment">// ProxySelector.getDefault().</span></span><br><span class="line">    <span class="keyword">if</span> (proxy != <span class="keyword">null</span>) &#123;</span><br><span class="line">        client.setProxy(proxy);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// OkHttp requires that we explicitly set the response cache.</span></span><br><span class="line">    OkUrlFactory okUrlFactory = <span class="keyword">new</span> OkUrlFactory(client);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use the installed NetworkSecurityPolicy to determine which requests are permitted over</span></span><br><span class="line">    <span class="comment">// http.</span></span><br><span class="line">    okUrlFactory.setUrlFilter(CLEARTEXT_FILTER);</span><br><span class="line"></span><br><span class="line">    ResponseCache responseCache = ResponseCache.getDefault();</span><br><span class="line">    <span class="keyword">if</span> (responseCache != <span class="keyword">null</span>) &#123;</span><br><span class="line">        AndroidInternal.setResponseCache(okUrlFactory, responseCache);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> okUrlFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里主要就是构造了一个<code>OkHttpClient</code>对象实例，这个类主要记录了http请求这次连接的的客户端信息，比如：缓存信息、socket信息、dns信息、代理信息、读写超时等。然后将这个对象通过<code>new OkUrlFactory(client)</code>构造一个<code>OkUrlFactory</code>对象实例，这个类主要负责统一抽象出okhttp的连接实现，具体的实现了<code>open()</code>方法。然后的<br><code>okUrlFactory.client().setConnectionPool(configAwareConnectionPool.get());</code>是给<code>OkHttpClient</code>设置一个连接池，这个连接池会动态的保存可用的网络连接，文档上的说明就是，这个连接池中的连接可能会在网络状态发生变化时失效，那么就会从这个连接池中移除，新的可用的连接将会被投入池中。<br>往上继续回溯，到<code>HttpHandler.openConnection()</code>方法中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> URLConnection <span class="title">openConnection</span><span class="params">(URL url, Proxy proxy)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (url == <span class="keyword">null</span> || proxy == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"url == null || proxy == null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> newOkUrlFactory(proxy).open(url);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>此时当<code>OkUrlFactory</code>对象被构造好，会调用它的<code>open()</code>方法进行某些打开的动作，最终这个方法会返回抽象类<code>HttpURLConnection</code>的实例，它又继承自<code>URLConnection</code>，这个方法在<code>OkUrlFactory</code>类中:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">HttpURLConnection <span class="title">open</span><span class="params">(URL url, Proxy proxy)</span> </span>&#123;</span><br><span class="line">    String protocol = url.getProtocol();</span><br><span class="line">    OkHttpClient copy = client.copyWithDefaults();</span><br><span class="line">    copy.setProxy(proxy);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (protocol.equals(<span class="string">"http"</span>)) <span class="keyword">return</span> <span class="keyword">new</span> HttpURLConnectionImpl(url, copy, urlFilter);</span><br><span class="line">    <span class="keyword">if</span> (protocol.equals(<span class="string">"https"</span>)) <span class="keyword">return</span> <span class="keyword">new</span> HttpsURLConnectionImpl(url, copy, urlFilter);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unexpected protocol: "</span> + protocol);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>根据协议类型，调用相应协议的实现类，这里我看看<code>HttpURLConnectionImpl</code>类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpURLConnectionImpl</span> <span class="keyword">extends</span> <span class="title">HttpURLConnection</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到这个类正是抽象类<code>HttpURLConnection</code>的具体实现类，看相应的构造方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HttpURLConnectionImpl</span><span class="params">(URL url, OkHttpClient client)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(url);</span><br><span class="line">    <span class="keyword">this</span>.client = client;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">HttpURLConnectionImpl</span><span class="params">(URL url, OkHttpClient client, URLFilter urlFilter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(url, client);</span><br><span class="line">    <span class="keyword">this</span>.urlFilter = urlFilter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>没干啥事儿，就是把传递进来的<code>OkHttpClient</code>实例保存下来，接着就调用父类的构造方法了，传递的就是上游的<code>URL</code>实例，到父类里看：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpURLConnection</span> <span class="keyword">extends</span> <span class="title">URLConnection</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">     <span class="function"><span class="keyword">protected</span> <span class="title">HttpURLConnection</span> <span class="params">(URL u)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(u);</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>依然是将<code>URL</code>实例交给父类的构造方法，看父类<code>URLConnection</code>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">URLConnection</span> </span>&#123;</span><br><span class="line">    ···</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">URLConnection</span><span class="params">(URL url)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.url = url;</span><br><span class="line">    &#125;</span><br><span class="line">    ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>很nice，还是啥都没干，一路下来都在赋值赋值赋值，完全看不到网络的具体连接。。。</p>
+<p>整理下分析至此为止的流程：<br><img src="/2019/08/21/Android-Http请求底层实现/Android-URL-openConnection流程图.png" alt="lbxx"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android逆向/" rel="tag"># Android逆向</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/15/Java动态代理-Proxy和InvocationHandler/" rel="next" title="Java动态代理 Proxy和InvocationHandler">
+                <i class="fa fa-chevron-left"></i> Java动态代理 Proxy和InvocationHandler
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Aspi1in</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#起因"><span class="nav-number">1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#App上的起始调用"><span class="nav-number">2.</span> <span class="nav-text">App上的起始调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调用链分析"><span class="nav-number">3.</span> <span class="nav-text">调用链分析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Aspi1in</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
